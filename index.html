@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unterrichts-Apps – Chemie, Biologie, MoLab</title>
+<meta name="description" content="Übersicht interaktiver Unterrichts-Apps für Chemie, Biologie, MoLab und weitere Themen.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 4h8M13 4v9l-7 12a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3l-7-12V4' fill='none' stroke='%231d5c63' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ===== Grundlagen ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --text-xs:clamp(.75rem,.7rem + .25vw,.875rem);
+  --text-sm:clamp(.875rem,.8rem + .35vw,1rem);
+  --text-base:clamp(1rem,.95rem + .25vw,1.125rem);
+  --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+  --text-xl:clamp(1.75rem,1.2rem + 2vw,2.75rem);
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
+  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;
+
+  --bg:#f5f3ee;
+  --surface:#fbfaf7;
+  --surface-2:#efece5;
+  --border:#d8d3c8;
+  --divider:#e4e0d7;
+  --text:#22211c;
+  --muted:#5f5d55;
+  --faint:#8b887e;
+
+  --primary:#1d5c63;
+  --primary-hover:#14454b;
+  --primary-soft:#d7e5e4;
+
+  --chem:#1f5f8b;   --chem-soft:#dbe6ef;
+  --bio:#3d7a2a;    --bio-soft:#dfe9d6;
+  --molab:#8a4b14;  --molab-soft:#efe1d2;
+  --misc:#5b4a8a;   --misc-soft:#e3def0;
+
+  --radius-sm:.375rem;--radius-md:.625rem;--radius-lg:.875rem;
+  --shadow-sm:0 1px 2px rgb(40 35 20 / .06);
+  --shadow-md:0 6px 18px rgb(40 35 20 / .08);
+  --ease:180ms cubic-bezier(.16,1,.3,1);
+
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-display:Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16171a;--surface:#1d1f23;--surface-2:#24272c;--border:#363a41;--divider:#2b2e34;
+    --text:#e4e2dc;--muted:#a9a69e;--faint:#7f7c75;
+    --primary:#6fb3b8;--primary-hover:#8fc7cb;--primary-soft:#21393b;
+    --chem:#7fb2db;--chem-soft:#1f2f3c;
+    --bio:#94c57e;--bio-soft:#243322;
+    --molab:#e0a46b;--molab-soft:#3a2c1f;
+    --misc:#b3a3e6;--misc-soft:#2c2840;
+    --shadow-sm:0 1px 2px rgb(0 0 0 / .3);--shadow-md:0 6px 18px rgb(0 0 0 / .35);
+  }
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:var(--space-16)}
+body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);line-height:1.6;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3{line-height:1.15;text-wrap:balance}
+p,li{text-wrap:pretty}
+a{color:var(--primary)}
+a:hover{color:var(--primary-hover)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:var(--radius-sm)}
+input,button{font:inherit;color:inherit}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;scroll-behavior:auto!important}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.skip{position:absolute;left:var(--space-4);top:-4rem;background:var(--primary);color:#fff;padding:var(--space-2) var(--space-4);border-radius:var(--radius-sm);z-index:10;text-decoration:none}
+.skip:focus{top:var(--space-4);color:#fff}
+
+.wrap{width:min(100% - 2*var(--space-5),1180px);margin-inline:auto}
+
+/* ===== Kopfbereich ===== */
+.site-header{border-bottom:1px solid var(--border);background:var(--surface);
+  background-image:linear-gradient(var(--divider) 1px,transparent 1px),linear-gradient(90deg,var(--divider) 1px,transparent 1px);
+  background-size:24px 24px;background-position:-1px -1px}
+.header-inner{padding-block:var(--space-10) var(--space-8);display:grid;gap:var(--space-6)}
+.brand{display:flex;align-items:center;gap:var(--space-3);color:var(--primary);font-size:var(--text-sm);font-weight:600;letter-spacing:.02em}
+.brand svg{width:28px;height:28px;flex:none}
+h1{font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;letter-spacing:-.01em;max-width:24ch}
+.lead{color:var(--muted);max-width:62ch}
+.tools{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center}
+.search{position:relative;flex:1 1 280px;max-width:440px}
+.search svg{position:absolute;left:var(--space-3);top:50%;translate:0 -50%;width:18px;height:18px;color:var(--faint);pointer-events:none}
+.search input{width:100%;padding:var(--space-3) var(--space-4) var(--space-3) var(--space-10);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);font-size:var(--text-sm);min-height:44px}
+.search input:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px var(--primary-soft)}
+.stat{font-size:var(--text-sm);color:var(--muted)}
+.stat strong{color:var(--text);font-variant-numeric:tabular-nums}
+
+/* ===== Navigation ===== */
+.subnav{position:sticky;top:0;z-index:5;background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.subnav ul{list-style:none;display:flex;gap:var(--space-2);overflow-x:auto;padding-block:var(--space-3);scrollbar-width:none}
+.subnav ul::-webkit-scrollbar{display:none}
+.subnav a{display:inline-flex;align-items:center;gap:var(--space-2);white-space:nowrap;text-decoration:none;color:var(--text);font-size:var(--text-sm);font-weight:500;padding:var(--space-2) var(--space-4);border-radius:999px;border:1px solid var(--border);background:var(--surface);min-height:40px;transition:background var(--ease),border-color var(--ease)}
+.subnav a:hover{border-color:var(--c,var(--primary));background:var(--c-soft,var(--primary-soft));color:var(--text)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+
+/* ===== Fächer ===== */
+main{padding-block:var(--space-8) var(--space-16)}
+.subject{--c:var(--primary);--c-soft:var(--primary-soft);padding-block:var(--space-8)}
+.subject + .subject{border-top:1px solid var(--border)}
+.subject[data-key="chemie"]{--c:var(--chem);--c-soft:var(--chem-soft)}
+.subject[data-key="biologie"]{--c:var(--bio);--c-soft:var(--bio-soft)}
+.subject[data-key="molab"]{--c:var(--molab);--c-soft:var(--molab-soft)}
+.subject[data-key="sonstige-apps"]{--c:var(--misc);--c-soft:var(--misc-soft)}
+.subject-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-2) var(--space-6);margin-bottom:var(--space-5)}
+.subject-head h2{font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;display:flex;align-items:center;gap:var(--space-3)}
+.subject-head h2::before{content:"";width:6px;height:1.1em;border-radius:3px;background:var(--c)}
+.subject-head p{font-size:var(--text-sm);color:var(--muted)}
+.grades{display:grid;gap:var(--space-4);grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+
+.grade{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5) var(--space-5);display:flex;flex-direction:column;gap:var(--space-3);box-shadow:var(--shadow-sm)}
+.grade-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
+.grade h3{font-size:var(--text-sm);font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:var(--space-2)}
+.badge{font-family:var(--font-mono);font-size:var(--text-xs);font-weight:600;background:var(--c-soft);color:var(--c);padding:2px var(--space-2);border-radius:var(--radius-sm)}
+.count{font-size:var(--text-xs);color:var(--faint);font-variant-numeric:tabular-nums}
+.path{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--faint)}
+
+.apps{list-style:none;display:grid;gap:var(--space-2)}
+.app a{display:block;text-decoration:none;color:var(--text);padding:var(--space-3) var(--space-4);border:1px solid var(--divider);border-left:4px solid var(--c);border-radius:var(--radius-md);background:var(--bg);transition:background var(--ease),border-color var(--ease),transform var(--ease)}
+.app a:hover{background:var(--c-soft);border-color:var(--c);color:var(--text)}
+.app a:active{transform:translateY(1px)}
+.app-title{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);font-weight:600;font-size:var(--text-sm)}
+.app-title svg{width:16px;height:16px;flex:none;color:var(--c)}
+.app-desc{font-size:var(--text-sm);color:var(--muted);margin-top:var(--space-1);line-height:1.5}
+.app-meta{font-size:var(--text-xs);color:var(--faint);margin-top:var(--space-1)}
+
+.placeholder{border:1px dashed var(--border);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--faint);display:flex;align-items:center;gap:var(--space-2)}
+.placeholder svg{width:16px;height:16px;flex:none}
+
+.empty-search{display:none;padding:var(--space-10) var(--space-6);text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:var(--radius-lg);margin-top:var(--space-8)}
+.empty-search.show{display:block}
+mark{background:var(--c-soft,var(--primary-soft));color:inherit;border-radius:2px;padding:0 1px}
+
+/* ===== Fußbereich ===== */
+footer{border-top:1px solid var(--border);background:var(--surface);padding-block:var(--space-8);font-size:var(--text-sm);color:var(--muted)}
+.footer-grid{display:grid;gap:var(--space-4);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+footer h2{font-size:var(--text-sm);color:var(--text);margin-bottom:var(--space-2)}
+noscript p{background:var(--molab-soft);padding:var(--space-4);border-radius:var(--radius-md);margin-top:var(--space-6)}
+</style>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 4h8M13 4v9l-7 12a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3l-7-12V4M9.5 20h13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Interaktive Unterrichtsmaterialien
+    </div>
+    <h1>Unterrichts&#8209;Apps für Chemie, Biologie und MoLab</h1>
+    <p class="lead">Kleine interaktive Übungen, Quizze und Visualisierungen – sortiert nach Fach und Jahrgang. Keine Anmeldung, keine Speicherung persönlicher Daten.</p>
+    <div class="tools">
+      <label class="search">
+        <span class="sr-only">Apps durchsuchen</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+        <input id="suche" type="search" placeholder="Apps durchsuchen, z. B. Teilchenmodell" autocomplete="off">
+      </label>
+      <p class="stat" id="statistik" aria-live="polite"></p>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Fächer">
+  <div class="wrap">
+    <ul id="fachnavigation"></ul>
+  </div>
+</nav>
+
+<main id="inhalt" class="wrap">
+  <div id="faecher"></div>
+  <div class="empty-search" id="keinTreffer" role="status">
+    Keine App passt zu dieser Suche. Suchbegriff ändern oder Feld leeren.
+  </div>
+  <noscript><p>Für die Übersicht wird JavaScript benötigt. Die Apps liegen in den Ordnern chemie/, biologie/, molab/ und sonstige-apps/.</p></noscript>
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <h2>Datenschutz</h2>
+      <p>Diese Seite verwendet keine Anmeldung, kein Tracking und keine externen Dienste. Es werden keine Namen, Noten oder sonstigen Schülerdaten gespeichert.</p>
+    </div>
+    <div>
+      <h2>Hinweis</h2>
+      <p>Die Apps sind didaktisch vereinfachte Modelle. Inhalte wurden vor dem Einsatz fachlich geprüft; bei Fragen bitte an die Lehrkraft wenden.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   >>> HIER NEUE APPS ERGÄNZEN <<<
+   Für jede neue App einen Eintrag in die Liste APPS einfügen.
+   - fach:         "chemie", "biologie", "molab" oder "sonstige-apps"
+   - jahrgang:     Ordnername, z. B. "07", "08", "ep", "q1", "q2"
+                   (bei "molab" und "sonstige-apps" einfach "" eintragen)
+   - titel:        Name der App
+   - beschreibung: ein kurzer Satz zum Inhalt
+   - datei:        relativer Pfad zur HTML-Datei im Repository
+   Einträge durch Komma trennen. Beispiel (zum Aktivieren die // entfernen):
+
+   // { fach: "chemie", jahrgang: "08", titel: "Teilchenmodell",
+   //   beschreibung: "Aggregatzustände im Teilchenmodell erkunden.",
+   //   datei: "chemie/08/teilchenmodell.html" },
+   ========================================================================== */
+const APPS = [
+
+];
+/* ======================= Ende der App-Liste ============================== */
+
+
+/* Struktur der Fächer und Jahrgänge – entspricht den Ordnern im Repository */
+const FAECHER = [
+  { key: "chemie",        name: "Chemie",        info: "Jahrgänge 7–10, EP, Q1 und Q2",
+    stufen: ["07","08","09","10","ep","q1","q2"] },
+  { key: "biologie",      name: "Biologie",      info: "Jahrgänge 5–10, EP, Q1 und Q2",
+    stufen: ["05","06","07","08","09","10","ep","q1","q2"] },
+  { key: "molab",         name: "MoLab",         info: "Projekte und Materialien für MoLab",
+    stufen: [""] },
+  { key: "sonstige-apps", name: "Sonstige Apps", info: "Weitere Unterrichts-Apps",
+    stufen: [""] }
+];
+
+const icons = {
+  pfeil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  plus:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+};
+
+function stufenName(s){
+  if (s === "") return "";
+  if (/^\d+$/.test(s)) return "Jahrgang " + parseInt(s, 10);
+  return s.toUpperCase();
+}
+function esc(t){
+  return String(t ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+function markiere(text, q){
+  const safe = esc(text);
+  if (!q) return safe;
+  const re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+  return safe.replace(re, "<mark>$1</mark>");
+}
+
+const nav = document.getElementById("fachnavigation");
+nav.innerHTML = FAECHER.map(f =>
+  `<li><a href="#${f.key}" style="--c:var(--${{chemie:"chem",biologie:"bio",molab:"molab","sonstige-apps":"misc"}[f.key]});--c-soft:var(--${{chemie:"chem",biologie:"bio",molab:"molab","sonstige-apps":"misc"}[f.key]}-soft)"><span class="dot" aria-hidden="true"></span>${f.name}</a></li>`
+).join("");
+
+function render(q = ""){
+  q = q.trim();
+  const ql = q.toLowerCase();
+  const passt = a => !ql || [a.titel, a.beschreibung, a.datei, stufenName(a.jahrgang)]
+    .some(v => String(v || "").toLowerCase().includes(ql));
+
+  let treffer = 0;
+  const html = FAECHER.map(f => {
+    const karten = f.stufen.map(s => {
+      const apps = APPS.filter(a => a.fach === f.key && (a.jahrgang || "") === s && passt(a));
+      treffer += apps.length;
+      if (ql && apps.length === 0) return "";
+      const pfad = f.key + "/" + (s ? s + "/" : "");
+      const titel = s ? `<span class="badge">${esc(s.toUpperCase())}</span>${esc(stufenName(s))}` : esc(f.name);
+      const liste = apps.length
+        ? `<ul class="apps">${apps.map(a => `
+            <li class="app"><a href="${esc(a.datei)}">
+              <span class="app-title"><span>${markiere(a.titel, q)}</span>${icons.pfeil}</span>
+              ${a.beschreibung ? `<p class="app-desc">${markiere(a.beschreibung, q)}</p>` : ""}
+            </a></li>`).join("")}</ul>`
+        : `<div class="placeholder">${icons.plus}<span>Platzhalter – noch keine App angelegt</span></div>`;
+      return `<article class="grade" aria-label="${esc(f.name + (s ? " " + stufenName(s) : ""))}">
+          <div class="grade-head">
+            <h3>${titel}</h3>
+            <span class="count">${apps.length} ${apps.length === 1 ? "App" : "Apps"}</span>
+          </div>
+          ${liste}
+          <span class="path">${esc(pfad)}</span>
+        </article>`;
+    }).join("");
+    if (ql && !karten) return "";
+    return `<section class="subject" id="${f.key}" data-key="${f.key}" aria-labelledby="h-${f.key}">
+        <div class="subject-head"><h2 id="h-${f.key}">${f.name}</h2><p>${f.info}</p></div>
+        <div class="grades">${karten}</div>
+      </section>`;
+  }).join("");
+
+  document.getElementById("faecher").innerHTML = html;
+  document.getElementById("keinTreffer").classList.toggle("show", !!ql && treffer === 0);
+  const stat = document.getElementById("statistik");
+  stat.innerHTML = ql
+    ? `<strong>${treffer}</strong> ${treffer === 1 ? "Treffer" : "Treffer"} für „${esc(q)}“`
+    : `<strong>${APPS.length}</strong> ${APPS.length === 1 ? "App" : "Apps"} veröffentlicht`;
+}
+
+const suche = document.getElementById("suche");
+suche.addEventListener("input", e => render(e.target.value));
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement !== suche) { e.preventDefault(); suche.focus(); }
+  if (e.key === "Escape" && document.activeElement === suche) { suche.value = ""; render(); }
+});
+render();
+</script>
+</body>
+</html>
