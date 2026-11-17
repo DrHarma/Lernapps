@@ -193,24 +193,26 @@ noscript p{background:var(--molab-soft);padding:var(--space-4);border-radius:var
 
 <script>
 /* ==========================================================================
-   >>> HIER NEUE APPS ERGÄNZEN <<<
-   Für jede neue App einen Eintrag in die Liste APPS einfügen.
-   - fach:         "chemie", "biologie", "molab" oder "sonstige-apps"
-   - jahrgang:     Ordnername, z. B. "07", "08", "ep", "q1", "q2"
-                   (bei "molab" und "sonstige-apps" einfach "" eintragen)
-   - titel:        Name der App
-   - beschreibung: ein kurzer Satz zum Inhalt
-   - datei:        relativer Pfad zur HTML-Datei im Repository
-   Einträge durch Komma trennen. Beispiel (zum Aktivieren die // entfernen):
+   AUTOMATISCHE APP-LISTE
+   Neue Apps einfach als HTML-Datei in den passenden Ordner hochladen
+   (z. B. biologie/q2/). Beim Veröffentlichen erzeugt GitHub automatisch
+   die Datei apps.json; diese Startseite liest sie und verlinkt alle Apps.
+   - Titel:        aus dem <title> der App (sonst aus dem Dateinamen)
+   - Beschreibung: aus <meta name="description" content="..."> der App
 
-   // { fach: "chemie", jahrgang: "08", titel: "Teilchenmodell",
-   //   beschreibung: "Aggregatzustände im Teilchenmodell erkunden.",
-   //   datei: "chemie/08/teilchenmodell.html" },
+   OPTIONAL: Titel oder Beschreibung hier überschreiben, ohne die App
+   selbst zu ändern. Schlüssel ist der Dateipfad. Beispiel:
+
+   // "biologie/q2/Genmutation Q2.html": {
+   //   titel: "Genmutationen",
+   //   beschreibung: "Mutationstypen erkennen und ihre Folgen erklären." },
    ========================================================================== */
-const APPS = [
+const ANPASSUNGEN = {
 
-];
-/* ======================= Ende der App-Liste ============================== */
+};
+/* ===================== Ende der Anpassungen ============================== */
+
+let APPS = [];
 
 
 /* Struktur der Fächer und Jahrgänge – entspricht den Ordnern im Repository */
@@ -266,7 +268,7 @@ function render(q = ""){
       const titel = s ? `<span class="badge">${esc(s.toUpperCase())}</span>${esc(stufenName(s))}` : esc(f.name);
       const liste = apps.length
         ? `<ul class="apps">${apps.map(a => `
-            <li class="app"><a href="${esc(a.datei)}">
+            <li class="app"><a href="${esc(encodeURI(a.datei))}">
               <span class="app-title"><span>${markiere(a.titel, q)}</span>${icons.pfeil}</span>
               ${a.beschreibung ? `<p class="app-desc">${markiere(a.beschreibung, q)}</p>` : ""}
             </a></li>`).join("")}</ul>`
@@ -301,7 +303,17 @@ document.addEventListener("keydown", e => {
   if (e.key === "/" && document.activeElement !== suche) { e.preventDefault(); suche.focus(); }
   if (e.key === "Escape" && document.activeElement === suche) { suche.value = ""; render(); }
 });
-render();
+const ladeHinweis = () => {
+  document.getElementById("statistik").textContent = "App-Liste wird geladen …";
+};
+ladeHinweis();
+fetch("apps.json", { cache: "no-store" })
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(liste => {
+    APPS = (Array.isArray(liste) ? liste : []).map(a => ({ ...a, ...(ANPASSUNGEN[a.datei] || {}) }));
+  })
+  .catch(() => { APPS = []; })
+  .finally(() => render(suche.value));
 </script>
 </body>
 </html>
