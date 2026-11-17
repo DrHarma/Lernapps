@@ -1,0 +1,1 @@
+window.UNTERRICHTS_APPS = [];
