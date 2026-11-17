@@ -1,0 +1,100 @@
+# Veröffentlicht die Website bei jedem Upload und erzeugt dabei
+# automatisch die App-Liste (apps.json) für die Startseite.
+name: Website veröffentlichen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dateien holen
+        uses: actions/checkout@v6
+
+      - name: App-Liste erzeugen
+        shell: python
+        run: |
+          import html, json, os, re
+
+          FAECHER = ["chemie", "biologie", "molab", "sonstige-apps"]
+          MIT_JAHRGANG = {"chemie", "biologie"}
+
+
+          def text(s):
+              s = re.sub(r"<[^>]+>", " ", s)
+              return re.sub(r"\s+", " ", html.unescape(s)).strip()
+
+
+          def lies(pfad):
+              with open(pfad, encoding="utf-8", errors="replace") as f:
+                  quelltext = f.read(200_000)
+              titel = re.search(r"<title[^>]*>(.*?)</title>", quelltext, re.I | re.S)
+              if not titel:
+                  titel = re.search(r"<h1[^>]*>(.*?)</h1>", quelltext, re.I | re.S)
+              beschreibung = None
+              for tag in re.findall(r"<meta\b[^>]*>", quelltext, re.I):
+                  if re.search(r"name\s*=\s*[\"']description[\"']", tag, re.I):
+                      beschreibung = re.search(r"content\s*=\s*\"([^\"]*)\"|content\s*=\s*'([^']*)'", tag, re.I)
+                      break
+              name = os.path.splitext(os.path.basename(pfad))[0]
+              ersatz = re.sub(r"[-_]+", " ", name).strip()
+              return (
+                  text(titel.group(1)) if titel and text(titel.group(1)) else ersatz,
+                  text(beschreibung.group(1) or beschreibung.group(2) or "") if beschreibung else "",
+              )
+
+
+          apps = []
+          for fach in FAECHER:
+              if not os.path.isdir(fach):
+                  continue
+              for wurzel, ordner, dateien in os.walk(fach):
+                  ordner[:] = sorted(o for o in ordner if not o.startswith("."))
+                  teile = wurzel.replace("\\", "/").split("/")
+                  if fach in MIT_JAHRGANG:
+                      if len(teile) < 2:
+                          continue
+                      jahrgang = teile[1].lower()
+                  else:
+                      jahrgang = ""
+                  for datei in sorted(dateien):
+                      if not datei.lower().endswith((".html", ".htm")):
+                          continue
+                      pfad = os.path.join(wurzel, datei).replace("\\", "/")
+                      titel, beschreibung = lies(pfad)
+                      apps.append({"fach": fach, "jahrgang": jahrgang, "titel": titel,
+                                   "beschreibung": beschreibung, "datei": pfad})
+
+          apps.sort(key=lambda a: (a["fach"], a["jahrgang"], a["titel"].lower()))
+          with open("apps.json", "w", encoding="utf-8") as f:
+              json.dump(apps, f, ensure_ascii=False, indent=2)
+          print(f"{len(apps)} Apps in apps.json eingetragen")
+          for a in apps:
+              print(" -", a["datei"], "->", a["titel"])
+
+      - name: GitHub Pages vorbereiten
+        uses: actions/configure-pages@v5
+
+      - name: Website hochladen
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: '.'
+
+      - name: Veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
