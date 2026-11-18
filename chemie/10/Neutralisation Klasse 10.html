@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neutralisation – Salzsäure und Essigsäure mit Natronlauge | Chemie Klasse 10</title>
+<meta name="description" content="Interaktives Versuchsprotokoll für Klasse 10: Zugabe von Natronlauge zu Salzsäure bzw. Essigsäure, pH-Messung, Austausch, Ionen und Neutralisationsreaktion.">
+<style>
+:root{
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+  --sp-1:.25rem;--sp-2:.5rem;--sp-3:.75rem;--sp-4:1rem;--sp-5:1.25rem;--sp-6:1.5rem;--sp-8:2rem;--sp-10:2.5rem;--sp-12:3rem;
+  --paper:#f5f2ea; --surface:#fffdf8; --surface-2:#efeadf; --line:#d9d2c3; --line-strong:#b9b09d;
+  --ink:#1e2830; --ink-2:#4a5560; --ink-3:#6b7480;
+  --acid:#b5412b; --acid-soft:#f6e1da;
+  --neutral:#2f7a4a; --neutral-soft:#dcefe2;
+  --base:#24598a; --base-soft:#dce8f4;
+  --accent:#24598a; --accent-hover:#1b4670;
+  --warn:#8a5a00; --warn-soft:#f8ecd0;
+  --radius:10px; --radius-sm:6px;
+  --shadow:0 1px 2px rgba(30,40,48,.06),0 4px 14px rgba(30,40,48,.06);
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:var(--text-base);line-height:1.55}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0 0 var(--sp-3);font-weight:700;letter-spacing:-.005em}
+h1{font-size:var(--text-xl)} h2{font-size:var(--text-lg)} h3{font-size:var(--text-base)}
+p{margin:0 0 var(--sp-3)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:#fff;padding:var(--sp-2) var(--sp-4);z-index:100}
+.skip:focus{left:var(--sp-2)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 var(--sp-4)}
+
+/* Header */
+.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:var(--sp-4);padding-top:var(--sp-4);padding-bottom:var(--sp-4);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:var(--sp-3);flex:1;min-width:240px}
+.brand svg{flex:none}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin:0 0 2px;font-weight:600}
+.brand h1{margin:0;font-size:var(--text-lg)}
+.top-actions{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+
+/* Stepper */
+.steps{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.steps ol{list-style:none;margin:0;padding:var(--sp-2) 0;display:flex;gap:var(--sp-1);overflow-x:auto;scrollbar-width:thin}
+.steps li{flex:none}
+.steps button{display:flex;align-items:center;gap:var(--sp-2);border:1px solid transparent;background:none;padding:var(--sp-2) var(--sp-3);border-radius:999px;cursor:pointer;font-size:var(--text-sm);color:var(--ink-2);min-height:44px;white-space:nowrap}
+.steps button:hover{background:var(--surface-2)}
+.steps .num{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;border:1.5px solid var(--line-strong);font-size:var(--text-xs);font-weight:700;font-variant-numeric:tabular-nums}
+.steps button[aria-current="step"]{background:var(--ink);color:#fff}
+.steps button[aria-current="step"] .num{border-color:#fff}
+.steps button.done .num{background:var(--neutral);border-color:var(--neutral);color:#fff}
+
+/* Main */
+main{padding:var(--sp-8) 0 var(--sp-12)}
+.panel{display:none}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}*{transition:none!important}}
+.panel-head{display:flex;justify-content:space-between;gap:var(--sp-4);align-items:flex-start;margin-bottom:var(--sp-6);flex-wrap:wrap}
+.panel-head h2{font-size:var(--text-xl);margin-bottom:var(--sp-2)}
+.lead{color:var(--ink-2);max-width:62ch;margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
+.card h3{font-size:var(--text-lg);margin-bottom:var(--sp-3)}
+.muted{color:var(--ink-3)}
+.small{font-size:var(--text-sm)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:var(--sp-5)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--sp-5)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);min-height:44px;padding:var(--sp-2) var(--sp-4);border-radius:var(--radius-sm);border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;font-size:var(--text-sm);font-weight:600;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-hover)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.help{background:var(--warn-soft);border-color:#e3cf9f;color:#5c3c00}
+.btn.help:hover{background:#f3e2bb}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.nav-row{display:flex;justify-content:space-between;gap:var(--sp-3);margin-top:var(--sp-6);flex-wrap:wrap}
+
+/* Form */
+label.lbl{display:block;font-weight:600;font-size:var(--text-sm);margin-bottom:var(--sp-1)}
+.hint{font-size:var(--text-sm);color:var(--ink-3);margin:0 0 var(--sp-2)}
+input[type=text],textarea,select{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:#fff;padding:var(--sp-2) var(--sp-3);min-height:44px}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(36,89,138,.18)}
+.field{margin-bottom:var(--sp-5)}
+
+/* Acid choice */
+.choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:var(--sp-4)}
+.choice label{display:block;position:relative;cursor:pointer;border:2px solid var(--line);border-radius:var(--radius);padding:var(--sp-5);background:var(--surface);transition:border-color .15s,background .15s}
+.choice label:hover{border-color:var(--line-strong)}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice input:checked + .opt{}
+.choice label:has(input:checked){border-color:var(--acid);background:var(--acid-soft)}
+.choice label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.choice .formula{font-family:var(--serif);font-size:var(--text-lg);font-weight:700}
+.choice .name{font-weight:600;margin-bottom:var(--sp-1)}
+.choice .tick{position:absolute;top:var(--sp-3);right:var(--sp-3);width:26px;height:26px;border-radius:50%;border:2px solid var(--line-strong);display:grid;place-items:center;color:transparent;font-size:14px;font-weight:700}
+.choice label:has(input:checked) .tick{background:var(--acid);border-color:var(--acid);color:#fff}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--text-xs);font-weight:600;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.badge.acid{background:var(--acid-soft);color:#7d2a1a;border-color:#e9c3b7}
+.badge.base{background:var(--base-soft);color:#173d61;border-color:#bcd2e8}
+
+/* Procedure */
+.proc{counter-reset:s;list-style:none;padding:0;margin:0}
+.proc li{counter-increment:s;position:relative;padding:0 0 var(--sp-4) 2.6rem}
+.proc li::before{content:counter(s);position:absolute;left:0;top:0;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:var(--text-sm)}
+.proc li:not(:last-child)::after{content:"";position:absolute;left:.92rem;top:2.1rem;bottom:.3rem;width:2px;background:var(--line)}
+ul.plain{margin:0;padding-left:1.1rem}
+ul.plain li{margin-bottom:var(--sp-1)}
+.safety{display:flex;gap:var(--sp-3);align-items:flex-start;background:var(--warn-soft);border:1px solid #e3cf9f;border-radius:var(--radius);padding:var(--sp-4);color:#4a3200}
+.safety svg{flex:none;margin-top:2px}
+
+/* Measurement */
+.measure{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:var(--sp-6);align-items:start}
+@media (max-width:760px){.measure{grid-template-columns:1fr}}
+table.ph{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.ph th,table.ph td{padding:4px var(--sp-2);border-bottom:1px solid var(--line);text-align:left}
+table.ph th{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600;position:sticky;top:0;background:var(--surface)}
+table.ph td:first-child{font-weight:600;width:44%}
+table.ph input{min-height:38px;padding:4px var(--sp-2);text-align:center;font-variant-numeric:tabular-nums}
+table.ph input.invalid{border-color:var(--acid);background:var(--acid-soft)}
+table.ph .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-left:6px;border:1px solid rgba(0,0,0,.15)}
+.tablebox{max-height:620px;overflow:auto;border:1px solid var(--line);border-radius:var(--radius-sm)}
+.chartbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--sp-4)}
+.chartbox svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--text-sm);margin-top:var(--sp-2);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:24px;height:0;border-top:3px solid var(--ink)}
+.legend i.dash{border-top-style:dashed}
+.teacher{margin-top:var(--sp-4);border-top:1px dashed var(--line-strong);padding-top:var(--sp-3)}
+.teacher summary{cursor:pointer;font-size:var(--text-sm);color:var(--ink-3);min-height:32px}
+
+/* Prompts */
+.prompts{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.prompts button{border:1px dashed var(--line-strong);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:var(--text-sm);cursor:pointer;min-height:36px;color:var(--ink-2)}
+.prompts button:hover{background:var(--surface-2);color:var(--ink)}
+
+/* Particle chips */
+.chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line-strong);background:#fff;border-radius:var(--radius-sm);padding:6px 12px;cursor:pointer;min-height:44px;font-size:var(--text-sm)}
+.chip .f{font-family:var(--serif);font-weight:700;font-size:var(--text-base)}
+.chip .n{color:var(--ink-3);font-size:var(--text-xs)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--base-soft)}
+.chip.ok{border-color:var(--neutral);background:var(--neutral-soft)}
+.chip.bad{border-color:var(--acid);background:var(--acid-soft)}
+.chip.miss{border-style:dashed;border-color:var(--warn)}
+.ion-card h3{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.feedback{margin-top:var(--sp-4);border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);font-size:var(--text-sm);display:none}
+.feedback.show{display:block}
+.feedback.good{background:var(--neutral-soft);border:1px solid #b5d9c1;color:#1d4d2e}
+.feedback.part{background:var(--warn-soft);border:1px solid #e3cf9f;color:#4a3200}
+.feedback ul{margin:var(--sp-2) 0 0;padding-left:1.1rem}
+
+/* Equation */
+.eq{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;background:var(--surface-2);border-radius:var(--radius);padding:var(--sp-4);border:1px solid var(--line)}
+.term{display:flex;gap:4px;align-items:center}
+.term select{width:auto;min-width:0}
+.term select.coef{width:64px;padding-right:4px}
+.term select.part{min-width:130px;font-family:var(--serif);font-weight:700}
+.op{font-family:var(--serif);font-size:var(--text-lg);font-weight:700;color:var(--ink-2);padding:0 2px}
+.arrow{font-size:var(--text-xl);line-height:1}
+
+/* Help drawer */
+.drawer{position:fixed;inset:0;z-index:50;display:none}
+.drawer.open{display:block}
+.drawer .scrim{position:absolute;inset:0;background:rgba(20,26,32,.35)}
+.drawer aside{position:absolute;right:0;top:0;bottom:0;width:min(460px,100%);background:var(--paper);box-shadow:-8px 0 30px rgba(0,0,0,.15);display:flex;flex-direction:column}
+.drawer header{display:flex;justify-content:space-between;align-items:center;padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--line);background:var(--surface)}
+.drawer header h2{margin:0}
+.drawer .body{overflow:auto;padding:var(--sp-5);flex:1}
+.hcard{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);margin-bottom:var(--sp-3);overflow:hidden}
+.hcard.rel{border-color:#e3cf9f;box-shadow:0 0 0 2px var(--warn-soft)}
+.hcard button.face{width:100%;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);background:none;border:none;cursor:pointer;text-align:left;min-height:56px}
+.hcard .ico{flex:none;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:var(--text-sm)}
+.ico.a{background:var(--acid-soft);color:var(--acid)} .ico.b{background:var(--base-soft);color:var(--base)} .ico.n{background:var(--neutral-soft);color:var(--neutral)} .ico.w{background:var(--warn-soft);color:var(--warn)}
+.hcard .t{font-weight:600;flex:1}
+.hcard .t small{display:block;font-weight:400;color:var(--ink-3);font-size:var(--text-xs)}
+.hcard .chev{flex:none;display:block;transform-origin:50% 50%;transition:transform .2s;color:var(--ink-3)}
+.hcard[data-open="true"] .chev{transform:rotate(180deg)}
+.hcard .back{display:none;padding:0 var(--sp-4) var(--sp-4) calc(var(--sp-4) + 36px + var(--sp-3));font-size:var(--text-sm)}
+.hcard[data-open="true"] .back{display:block}
+.hcard .back .formula{font-family:var(--serif);background:var(--surface-2);border-radius:6px;padding:var(--sp-2) var(--sp-3);display:block;margin:var(--sp-2) 0;font-size:var(--text-base)}
+.hcard .used{font-size:var(--text-xs);color:var(--neutral);font-weight:600}
+.section-label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:700;margin:var(--sp-4) 0 var(--sp-2)}
+.help-count{display:inline-grid;place-items:center;min-width:1.5em;height:1.5em;border-radius:999px;background:#5c3c00;color:#fff;font-size:var(--text-xs);padding:0 5px}
+
+/* Summary */
+.sum dl{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:var(--sp-2) var(--sp-4);margin:0}
+.sum dt{font-weight:600;color:var(--ink-2);font-size:var(--text-sm)}
+.sum dd{margin:0;white-space:pre-wrap}
+@media (max-width:600px){.sum dl{grid-template-columns:1fr}.sum dd{margin-bottom:var(--sp-3)}}
+
+/* Modal */
+.modal{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(20,26,32,.4);padding:var(--sp-4)}
+.modal.open{display:grid}
+.modal .box{background:var(--surface);border-radius:var(--radius);padding:var(--sp-6);max-width:440px;width:100%;box-shadow:var(--shadow)}
+.modal .row{display:flex;gap:var(--sp-2);justify-content:flex-end;margin-top:var(--sp-5);flex-wrap:wrap}
+
+footer{border-top:1px solid var(--line);padding:var(--sp-5) 0;color:var(--ink-3);font-size:var(--text-xs)}
+sub,sup{line-height:0}
+
+@media print{
+  .top-actions,.steps,.nav-row,.drawer,.modal,.btn,.teacher,footer,.prompts{display:none!important}
+  body{background:#fff}
+  .panel{display:none!important}
+  #p7{display:block!important}
+  .card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M15 4h10M17 4v11L7 33a3 3 0 0 0 2.6 4.5h20.8A3 3 0 0 0 33 33L23 15V4" fill="none" stroke="#1e2830" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M10.5 27h19l3 5.6a2 2 0 0 1-1.8 3H9.3a2 2 0 0 1-1.8-3z" fill="#2f7a4a" opacity=".85"/>
+        <circle cx="18" cy="31" r="1.4" fill="#fff"/><circle cx="23" cy="29.5" r="1" fill="#fff"/>
+      </svg>
+      <div>
+        <p class="eyebrow">Chemie · Klasse 10 · Säuren und Basen</p>
+        <h1>Was passiert, wenn Natronlauge auf Säure trifft?</h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn help" id="openHelp" type="button" aria-haspopup="dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="13" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h5M8 11h5M8 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 7v13a1 1 0 0 1-1 1H8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Hilfekarten <span class="help-count" id="helpCount">0</span>
+      </button>
+      <button class="btn ghost" id="resetBtn" type="button">Neu beginnen</button>
+    </div>
+  </div>
+</header>
+
+<nav class="steps" aria-label="Arbeitsschritte">
+  <div class="wrap"><ol id="stepList"></ol></div>
+</nav>
+
+<main id="main">
+  <div class="wrap">
+
+  <!-- 1 Gruppe -->
+  <section class="panel" id="p1" aria-labelledby="h-p1">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p1">1 · Eure Gruppe</h2>
+        <p class="lead">Ihr untersucht, wie sich der pH-Wert einer Säure verändert, wenn ihr schrittweise Natronlauge hinzugebt. Jede Gruppe arbeitet mit <strong>einer</strong> der beiden Säuren.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="field" style="max-width:420px">
+        <label class="lbl" for="groupName">Gruppenname oder -nummer</label>
+        <p class="hint">Bitte keine vollständigen Namen eintragen – z. B. „Gruppe 3“ oder „Tisch B“.</p>
+        <input type="text" id="groupName" data-bind="group" placeholder="z. B. Gruppe 3" autocomplete="off">
+      </div>
+      <fieldset style="border:0;padding:0;margin:0">
+        <legend class="lbl" style="margin-bottom:var(--sp-3)">Mit welcher Säure arbeitet eure Gruppe?</legend>
+        <div class="choice">
+          <label>
+            <input type="radio" name="acid" value="hcl">
+            <span class="tick" aria-hidden="true">✓</span>
+            <div class="name">Salzsäure</div>
+            <div class="formula">HCl (aq)</div>
+            <p class="small muted" style="margin:var(--sp-2) 0 0">10 ml, c = 0,1 mol/l</p>
+          </label>
+          <label>
+            <input type="radio" name="acid" value="hac">
+            <span class="tick" aria-hidden="true">✓</span>
+            <div class="name">Essigsäure</div>
+            <div class="formula">CH<sub>3</sub>COOH (aq)</div>
+            <p class="small muted" style="margin:var(--sp-2) 0 0">10 ml, c = 0,1 mol/l</p>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="card">
+      <h3>Eure Vermutung</h3>
+      <label class="lbl" for="hypo">Wie wird sich der pH-Wert verändern, wenn ihr nach und nach Natronlauge hinzugebt?</label>
+      <textarea id="hypo" data-bind="hypothesis" placeholder="Wir vermuten, dass …"></textarea>
+    </div>
+    <div class="nav-row"><span></span><button class="btn primary" data-next type="button">Weiter zur Versuchsanleitung →</button></div>
+  </section>
+
+  <!-- 2 Versuch -->
+  <section class="panel" id="p2" aria-labelledby="h-p2">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p2">2 · Versuchsanleitung</h2>
+        <p class="lead">Lest die Anleitung zuerst vollständig. Notiert eure Messwerte im nächsten Schritt direkt nach jeder Zugabe.</p>
+      </div>
+      <span class="badge acid" data-acid-badge></span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Geräte</h3>
+        <ul class="plain">
+          <li>Becherglas (50 ml oder 100 ml)</li>
+          <li>Messpipette oder Messzylinder (10 ml)</li>
+          <li>Bürette oder Messpipette für die Natronlauge (1-ml-Schritte)</li>
+          <li>pH-Meter (alternativ: Universalindikatorpapier mit Farbskala)</li>
+          <li>Glasstab oder Magnetrührer</li>
+          <li>Spritzflasche mit destilliertem Wasser</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Chemikalien</h3>
+        <ul class="plain">
+          <li><span data-acid-name>Säure</span>, c = 0,1 mol/l (10 ml)</li>
+          <li>Natronlauge NaOH (aq), c = 0,1 mol/l (ca. 15 ml)</li>
+        </ul>
+        <div class="safety" style="margin-top:var(--sp-4)">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="currentColor"/></svg>
+          <div class="small"><strong>Sicherheit:</strong> Schutzbrille tragen. Spritzer sofort mit viel Wasser abspülen. Die Hinweise eurer Lehrkraft zur Gefährdungsbeurteilung und Entsorgung beachten.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Durchführung</h3>
+      <ol class="proc">
+        <li>Gebt <strong>10 ml</strong> <span data-acid-name>Säure</span> (c = 0,1 mol/l) in das Becherglas.</li>
+        <li>Messt den pH-Wert der Säure, <strong>bevor</strong> ihr Natronlauge zugebt, und tragt ihn bei „0 ml“ ein.</li>
+        <li>Gebt <strong>1 ml</strong> Natronlauge (c = 0,1 mol/l) hinzu und rührt gut um.</li>
+        <li>Messt den pH-Wert und tragt ihn sofort in die Tabelle ein.</li>
+        <li>Wiederholt Schritt 3 und 4, bis ihr insgesamt <strong>15 ml</strong> Natronlauge zugegeben habt.</li>
+        <li>Spült das pH-Meter nach dem Versuch mit destilliertem Wasser ab.</li>
+      </ol>
+    </div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><button class="btn primary" data-next type="button">Weiter zur Messung →</button></div>
+  </section>
+
+  <!-- 3 Messung -->
+  <section class="panel" id="p3" aria-labelledby="h-p3">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p3">3 · Messwerte</h2>
+        <p class="lead">Tragt nach jeder Zugabe den gemessenen pH-Wert ein. Das Diagramm wird automatisch gezeichnet.</p>
+      </div>
+      <span class="badge acid" data-acid-badge></span>
+    </div>
+    <div class="measure">
+      <div class="card" style="padding:var(--sp-4)">
+        <div class="tablebox">
+          <table class="ph" id="ownTable">
+            <thead><tr><th scope="col">V(NaOH) in ml</th><th scope="col">pH-Wert</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <details class="teacher">
+          <summary>Für die Lehrkraft: Beispielwerte</summary>
+          <p class="small muted" style="margin-top:var(--sp-2)">Füllt die Tabelle mit berechneten Werten (z. B. wenn der Versuch nicht durchgeführt werden kann). Vorhandene Einträge werden überschrieben.</p>
+          <button class="btn" type="button" id="fillOwn">Beispielwerte einsetzen</button>
+        </details>
+      </div>
+      <div>
+        <div class="chartbox">
+          <svg id="chart1" viewBox="0 0 640 420" role="img" aria-label="Diagramm: pH-Wert gegen zugegebenes Volumen Natronlauge"></svg>
+          <div class="legend"><span><i style="border-color:var(--ink)"></i><span data-acid-name>eure Säure</span> (eure Werte)</span></div>
+        </div>
+        <div class="card" style="margin-top:var(--sp-5)">
+          <label class="lbl" for="obs">Beobachtungen</label>
+          <p class="hint">Beschreibt den Verlauf in Worten: Wie verändert sich der pH-Wert? Gibt es eine Stelle, an der er sich besonders stark ändert?</p>
+          <textarea id="obs" data-bind="observation" placeholder="Zu Beginn … Nach etwa … ml …"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><button class="btn primary" data-next type="button">Weiter zum Austausch →</button></div>
+  </section>
+
+  <!-- 4 Austausch -->
+  <section class="panel" id="p4" aria-labelledby="h-p4">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p4">4 · Austausch mit einer anderen Gruppe</h2>
+        <p class="lead">Sucht euch eine Gruppe, die mit <strong data-other-name>der anderen Säure</strong> gearbeitet hat. Vergleicht eure Messwerte und haltet vor der Auswertung eure Gemeinsamkeiten fest.</p>
+      </div>
+      <span class="badge" data-other-badge></span>
+    </div>
+    <div class="measure">
+      <div class="card" style="padding:var(--sp-4)">
+        <div class="field" style="margin-bottom:var(--sp-4)">
+          <label class="lbl" for="partnerName">Partnergruppe</label>
+          <input type="text" id="partnerName" data-bind="partner" placeholder="z. B. Gruppe 5" autocomplete="off">
+        </div>
+        <p class="hint">Werte der Partnergruppe (<span data-other-name>andere Säure</span>) – optional, aber hilfreich für den Vergleich:</p>
+        <div class="tablebox" style="max-height:440px">
+          <table class="ph" id="partnerTable">
+            <thead><tr><th scope="col">V(NaOH) in ml</th><th scope="col">pH-Wert</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <details class="teacher">
+          <summary>Für die Lehrkraft: Beispielwerte</summary>
+          <button class="btn" type="button" id="fillPartner" style="margin-top:var(--sp-2)">Beispielwerte der Partnergruppe einsetzen</button>
+        </details>
+      </div>
+      <div>
+        <div class="chartbox">
+          <svg id="chart2" viewBox="0 0 640 420" role="img" aria-label="Vergleichsdiagramm beider Säuren"></svg>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i><span data-acid-name>eure Säure</span></span>
+            <span><i class="dash" style="border-color:var(--base)"></i><span data-other-name>andere Säure</span> (Partnergruppe)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Gemeinsamkeiten</h3>
+      <p class="hint">Diese Fragen helfen beim Vergleich. Klickt eine Frage an, um sie als Satzanfang zu übernehmen.</p>
+      <div class="prompts" data-target="common">
+        <button type="button" data-text="In beiden Versuchen steigt der pH-Wert … ">Wie verändert sich der pH-Wert insgesamt?</button>
+        <button type="button" data-text="In beiden Versuchen ändert sich der pH-Wert besonders stark bei etwa … ml Natronlauge. ">Wo gibt es einen Sprung?</button>
+        <button type="button" data-text="Am Ende (15 ml) liegt der pH-Wert in beiden Fällen bei etwa … ">Wie ist der pH-Wert am Ende?</button>
+        <button type="button" data-text="Bis zum Sprung ändert sich der pH-Wert in beiden Fällen … ">Wie verläuft die Kurve vor dem Sprung?</button>
+      </div>
+      <label class="lbl" for="common">Das haben wir gemeinsam beobachtet:</label>
+      <textarea id="common" data-bind="common" placeholder="1. …&#10;2. …"></textarea>
+      <div style="margin-top:var(--sp-5)">
+        <label class="lbl" for="diff">Unterschiede (optional)</label>
+        <p class="hint">Zum Beispiel: Startwert, Lage des Sprungs, pH-Wert bei 10 ml.</p>
+        <textarea id="diff" data-bind="differences" placeholder="Bei der Salzsäure …, bei der Essigsäure …" style="min-height:80px"></textarea>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><button class="btn primary" data-next type="button">Weiter zur Auswertung →</button></div>
+  </section>
+
+  <!-- 5 Ionen -->
+  <section class="panel" id="p5" aria-labelledby="h-p5">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p5">5 · Auswertung I: Welche Ionen sind vorhanden?</h2>
+        <p class="lead">Wählt für jede Lösung alle Ionen aus, die darin vorliegen. Wasser-Moleküle sind in allen Lösungen vorhanden und müssen nicht ausgewählt werden.</p>
+      </div>
+      <button class="btn help" type="button" data-open-help>Hilfekarten öffnen</button>
+    </div>
+    <div id="ionCards"></div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><button class="btn primary" data-next type="button">Weiter zur Reaktion →</button></div>
+  </section>
+
+  <!-- 6 Reaktion -->
+  <section class="panel" id="p6" aria-labelledby="h-p6">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p6">6 · Auswertung II: Welche Reaktion läuft ab?</h2>
+        <p class="lead">Der pH-Wert steigt, weil Teilchen aus der Säure und Teilchen aus der Natronlauge miteinander reagieren. Findet heraus, welche das sind.</p>
+      </div>
+      <button class="btn help" type="button" data-open-help>Hilfekarten öffnen</button>
+    </div>
+
+    <div class="card">
+      <h3>a) Welche beiden Teilchen reagieren miteinander – und was entsteht?</h3>
+      <p class="hint">Stellt die Reaktionsgleichung für <strong data-acid-name>eure Säure</strong> zusammen. Lasst nicht benötigte Felder leer.</p>
+      <div class="eq" id="eqOwn"></div>
+      <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
+        <button class="btn primary" type="button" data-check-eq="eqOwn">Gleichung prüfen</button>
+      </div>
+      <div class="feedback" id="fb-eqOwn" role="status"></div>
+    </div>
+
+    <div class="card">
+      <h3>b) Welche Ionen reagieren nicht mit?</h3>
+      <p class="hint">Diese Ionen sind vorher und nachher unverändert in der Lösung. Man nennt sie <strong>Zuschauer-Ionen</strong>. Wählt sie für euren Versuch aus.</p>
+      <div class="chips" id="specChips"></div>
+      <div style="margin-top:var(--sp-3)"><button class="btn" type="button" id="checkSpec">Auswahl prüfen</button></div>
+      <div class="feedback" id="fb-spec" role="status"></div>
+    </div>
+
+    <div class="card">
+      <h3>c) Erklärt eure Beobachtungen</h3>
+      <p class="hint">Nutzt die Reaktion, um den Verlauf eurer Messkurve zu erklären. Satzanfänge zum Anklicken:</p>
+      <div class="prompts" data-target="explain">
+        <button type="button" data-text="Bei jeder Zugabe von Natronlauge reagieren die …-Ionen mit … zu Wasser. ">Was passiert bei jeder Zugabe?</button>
+        <button type="button" data-text="Dadurch nimmt die Anzahl der …-Ionen ab und der pH-Wert … ">Warum steigt der pH-Wert?</button>
+        <button type="button" data-text="Bei 10 ml Natronlauge wurden genauso viele …-Ionen zugegeben, wie … vorhanden waren. ">Warum gibt es bei 10 ml einen Sprung?</button>
+        <button type="button" data-text="Nach dem Sprung sind überschüssige …-Ionen in der Lösung, daher ist die Lösung … ">Was passiert nach dem Sprung?</button>
+      </div>
+      <label class="lbl" for="explain">Unsere Erklärung</label>
+      <textarea id="explain" data-bind="explanation" style="min-height:150px" placeholder="Bei jeder Zugabe …"></textarea>
+      <div style="margin-top:var(--sp-5)">
+        <label class="lbl" for="general">Gemeinsamkeit beider Säuren auf Teilchenebene</label>
+        <p class="hint">Welche Reaktion erklärt die Gemeinsamkeiten, die ihr mit der Partnergruppe festgehalten habt?</p>
+        <textarea id="general" data-bind="general" style="min-height:80px" placeholder="Bei beiden Säuren …"></textarea>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><button class="btn primary" data-next type="button">Zum Ergebnis →</button></div>
+  </section>
+
+  <!-- 7 Ergebnis -->
+  <section class="panel" id="p7" aria-labelledby="h-p7">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-p7">7 · Ergebnis</h2>
+        <p class="lead">Hier seht ihr euer Protokoll. Ihr könnt es drucken (auch als PDF speichern) oder als Textdatei herunterladen.</p>
+      </div>
+      <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap">
+        <button class="btn primary" type="button" id="printBtn">Drucken / PDF</button>
+        <button class="btn" type="button" id="dlBtn">Als Textdatei speichern</button>
+      </div>
+    </div>
+    <div class="card sum" id="summary"></div>
+    <div class="chartbox"><svg id="chart3" viewBox="0 0 640 420" role="img" aria-label="Messkurven im Protokoll"></svg>
+      <div class="legend">
+        <span><i style="border-color:var(--ink)"></i><span data-acid-name>eure Säure</span></span>
+        <span><i class="dash" style="border-color:var(--base)"></i><span data-other-name>andere Säure</span></span>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn" data-prev type="button">← Zurück</button><span></span></div>
+  </section>
+
+  </div>
+</main>
+
+<footer><div class="wrap">Alle Eingaben bleiben nur in diesem Browser gespeichert und werden nicht übertragen.</div></footer>
+
+<!-- Help drawer -->
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <div class="scrim" data-close-help></div>
+  <aside>
+    <header>
+      <h2 id="drawerTitle">Hilfekarten</h2>
+      <button class="btn ghost" type="button" data-close-help aria-label="Hilfekarten schließen">✕ Schließen</button>
+    </header>
+    <div class="body">
+      <p class="small muted">Deckt eine Karte nur auf, wenn ihr nicht weiterkommt. Hervorgehobene Karten passen zum aktuellen Schritt.</p>
+      <div id="helpList"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- Confirm modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="box">
+    <h2 id="modalTitle" style="font-size:var(--text-lg)">Wirklich?</h2>
+    <p id="modalText"></p>
+    <div class="row"><button class="btn" type="button" id="modalNo">Abbrechen</button><button class="btn primary" type="button" id="modalYes">Ja</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const KEY = "neutralisation-k10-v1";
+const VOLS = Array.from({length:16},(_,i)=>i);
+const STEPS = ["Gruppe","Versuch","Messung","Austausch","Ionen","Reaktion","Ergebnis"];
+
+const ACIDS = {
+  hcl:{name:"Salzsäure", formula:"HCl", short:"Salzsäure"},
+  hac:{name:"Essigsäure", formula:"CH₃COOH", short:"Essigsäure"}
+};
+
+/* Particles */
+const P = {
+  H3O:{f:"H₃O⁺", n:"Oxonium-Ion"},
+  H:{f:"H⁺", n:"Wasserstoff-Ion (Proton)"},
+  OH:{f:"OH⁻", n:"Hydroxid-Ion"},
+  Na:{f:"Na⁺", n:"Natrium-Ion"},
+  Cl:{f:"Cl⁻", n:"Chlorid-Ion"},
+  Ac:{f:"CH₃COO⁻", n:"Acetat-Ion"},
+  HAc:{f:"CH₃COOH", n:"Essigsäure-Molekül"},
+  H2O:{f:"H₂O", n:"Wasser-Molekül"},
+  NaCl:{f:"NaCl", n:"Natriumchlorid"},
+  NaOH:{f:"NaOH", n:"Natriumhydroxid"},
+  HCl:{f:"HCl", n:"Chlorwasserstoff"},
+  O2m:{f:"O²⁻", n:"Oxid-Ion"},
+  Cl2:{f:"Cl₂", n:"Chlor"},
+  H2:{f:"H₂", n:"Wasserstoff"}
+};
+const ION_CHOICES = ["H3O","OH","Na","Cl","Ac","O2m","H","NaCl"];
+
+const SOLUTIONS = {
+  hcl:{title:"Salzsäure", formula:"HCl (aq)", kind:"acid", need:[["H3O","H"],["Cl"]],
+       msg:{OH:"In der sauren Lösung liegen praktisch keine Hydroxid-Ionen vor.",Na:"Natrium-Ionen kommen erst mit der Natronlauge dazu.",Ac:"Acetat-Ionen gehören zur Essigsäure.",O2m:"Oxid-Ionen kommen in wässrigen Lösungen nicht vor.",NaCl:"Natriumchlorid ist ein Salz, keine Ionensorte – und gehört nicht zur Salzsäure."}},
+  hac:{title:"Essigsäure", formula:"CH₃COOH (aq)", kind:"acid", need:[["H3O","H"],["Ac"]],
+       msg:{OH:"In der sauren Lösung liegen praktisch keine Hydroxid-Ionen vor.",Na:"Natrium-Ionen kommen erst mit der Natronlauge dazu.",Cl:"Chlorid-Ionen gehören zur Salzsäure.",O2m:"Oxid-Ionen kommen in wässrigen Lösungen nicht vor.",NaCl:"Natriumchlorid ist ein Salz und gehört nicht zur Essigsäure."},
+       extra:"Gut zu wissen: Essigsäure ist eine schwache Säure. Nur ein kleiner Teil der Moleküle gibt ein Proton ab – die meisten liegen weiterhin als CH₃COOH-Moleküle vor. Deshalb ist der pH-Wert zu Beginn höher als bei der Salzsäure."},
+  naoh:{title:"Natronlauge", formula:"NaOH (aq)", kind:"base", need:[["Na"],["OH"]],
+       msg:{H3O:"In der alkalischen Lösung liegen praktisch keine Oxonium-Ionen vor.",H:"In der alkalischen Lösung liegen praktisch keine H⁺-Ionen vor.",Cl:"Chlorid-Ionen gehören zur Salzsäure.",Ac:"Acetat-Ionen gehören zur Essigsäure.",O2m:"Oxid-Ionen kommen in wässrigen Lösungen nicht vor.",NaCl:"Natriumchlorid ist ein Salz und gehört nicht zur Natronlauge."}}
+};
+
+const EQ_PARTS = ["","H3O","H","OH","Na","Cl","Ac","HAc","H2O","NaCl","H2","Cl2","NaOH"];
+
+/* Help cards */
+const HELP = [
+  {id:"saeure", ico:"a", sym:"S", title:"Was ist eine Säure?", sub:"Definition", steps:[5,6],
+   html:"<p>Säuren sind Stoffe, deren Teilchen <strong>Protonen (H⁺) abgeben</strong> können – sie sind <strong>Protonendonatoren</strong>.</p><p>In Wasser geben Säure-Moleküle ihr Proton an ein Wasser-Molekül ab. Dabei entstehen <strong>Oxonium-Ionen H₃O⁺</strong>. Sie sind für die saure Wirkung verantwortlich.</p><span class='formula'>HCl + H₂O → H₃O⁺ + Cl⁻</span><p>Was vom Säure-Molekül übrig bleibt, ist ein negativ geladenes Ion (Säurerest-Ion).</p>"},
+  {id:"base", ico:"b", sym:"B", title:"Was ist eine Base – und was ist Natronlauge?", sub:"Definition", steps:[5,6],
+   html:"<p>Basen sind Teilchen, die <strong>Protonen (H⁺) aufnehmen</strong> können – sie sind <strong>Protonenakzeptoren</strong>.</p><p>Natronlauge ist eine Lösung von Natriumhydroxid in Wasser. Beim Lösen zerfällt das Salz in seine Ionen:</p><span class='formula'>NaOH → Na⁺ + OH⁻</span><p>Die <strong>Hydroxid-Ionen OH⁻</strong> sind die Base: Sie können ein Proton aufnehmen. Laugen enthalten immer Hydroxid-Ionen.</p>"},
+  {id:"essig", ico:"a", sym:"E", title:"Welche Ionen bildet Essigsäure?", sub:"Tipp zur Essigsäure", steps:[5],
+   html:"<p>Auch Essigsäure-Moleküle geben in Wasser ein Proton ab – und zwar das H-Atom der COOH-Gruppe:</p><span class='formula'>CH₃COOH + H₂O ⇌ CH₃COO⁻ + H₃O⁺</span><p>Es entstehen Oxonium-Ionen und <strong>Acetat-Ionen CH₃COO⁻</strong>. Essigsäure ist eine <strong>schwache Säure</strong>: Nur ein kleiner Teil der Moleküle reagiert so.</p>"},
+  {id:"ph", ico:"n", sym:"pH", title:"Was sagt der pH-Wert aus?", sub:"Grundwissen", steps:[3,4,6],
+   html:"<p>pH &lt; 7: <strong>sauer</strong> – es liegen mehr H₃O⁺- als OH⁻-Ionen vor.<br>pH = 7: <strong>neutral</strong> – gleich viele.<br>pH &gt; 7: <strong>alkalisch</strong> – mehr OH⁻- als H₃O⁺-Ionen.</p><p>Steigt der pH-Wert, wird die Anzahl der Oxonium-Ionen in der Lösung <strong>kleiner</strong>. Ein Anstieg um 1 bedeutet: nur noch ein Zehntel so viele H₃O⁺-Ionen.</p>"},
+  {id:"vergleich", ico:"w", sym:"?", title:"Worauf achten beim Vergleich?", sub:"Tipp zum Austausch", steps:[4],
+   html:"<ul style='padding-left:1.1rem;margin:0'><li>Steigt der pH-Wert in beiden Versuchen an?</li><li>Bei welcher Zugabe ändert sich der pH-Wert besonders stark?</li><li>Sind die Endwerte bei 15 ml ähnlich?</li><li>Wo unterscheiden sich die Kurven (z. B. Startwert)?</li></ul>"},
+  {id:"wasser", ico:"n", sym:"H₂O", title:"Was könnte bei der Reaktion entstehen?", sub:"Tipp zum Produkt", steps:[6],
+   html:"<p>Das Oxonium-Ion H₃O⁺ (Säure) kann sein zusätzliches Proton an das Hydroxid-Ion OH⁻ (Base) abgeben.</p><p>Überlegt: Was entsteht, wenn ein OH⁻-Ion ein H⁺ aufnimmt? Und was bleibt vom H₃O⁺ übrig, wenn es ein H⁺ abgibt?</p><p><strong>Tipp:</strong> In beiden Fällen entsteht ein Teilchen, das ihr sehr gut kennt – <strong>Wasser</strong>.</p>"},
+  {id:"zuschauer", ico:"w", sym:"Na⁺", title:"Reagieren alle Ionen?", sub:"Tipp zu Zuschauer-Ionen", steps:[6],
+   html:"<p>Nicht alle Ionen nehmen an der Reaktion teil. Ionen, die weder Protonen abgeben noch aufnehmen, bleiben einfach in der Lösung. Man nennt sie <strong>Zuschauer-Ionen</strong>.</p><p>Fragt euch für jedes Ion: Kann es ein Proton abgeben oder aufnehmen?</p>"},
+  {id:"sprung", ico:"b", sym:"10", title:"Warum gerade bei 10 ml?", sub:"Tipp zum pH-Sprung", steps:[4,6],
+   html:"<p>Beide Lösungen haben die <strong>gleiche Konzentration</strong> (0,1 mol/l). In 10 ml Säure stecken also genauso viele Säureteilchen wie in 10 ml Natronlauge Hydroxid-Ionen.</p><p>Nach 10 ml Natronlauge hat jedes Säureteilchen „seinen Partner“ gefunden. Jeder weitere Tropfen Natronlauge bringt OH⁻-Ionen, die nicht mehr reagieren können – der pH-Wert steigt stark.</p>"}
+];
+
+/* Model pH values */
+function modelPH(acid, v){
+  const ca=0.1, va=10, cb=0.1, vt=va+v;
+  const na=ca*va, nb=cb*v;
+  if(acid==="hcl"){
+    if(Math.abs(na-nb)<1e-9) return 7;
+    if(nb<na){ const h=(na-nb)/vt; return -Math.log10(h); }
+    const oh=(nb-na)/vt; return 14+Math.log10(oh);
+  }
+  const pKa=4.76;
+  if(v===0) return 0.5*(pKa - Math.log10(ca));
+  if(nb<na) return pKa + Math.log10(nb/(na-nb));
+  if(Math.abs(na-nb)<1e-9){ const a=na/vt; return 14-0.5*((14-pKa)-Math.log10(a)); }
+  const oh=(nb-na)/vt; return 14+Math.log10(oh);
+}
+
+/* State */
+const blank = ()=>({step:1, maxStep:1, group:"", acid:"", hypothesis:"", observation:"", partner:"", common:"", differences:"", explanation:"", general:"",
+  own:{}, partnerVals:{}, ions:{}, ionChecked:{}, eq:{}, eqResult:"", spec:[], specResult:"", help:[]});
+let S;
+try{ S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){ S = blank(); }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+const other = ()=> S.acid==="hcl" ? "hac" : (S.acid==="hac" ? "hcl" : "");
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* pH colour (universal indicator approximation) */
+function phColor(p){
+  const stops=[[0,"#c62828"],[2,"#e4572e"],[4,"#f29e2e"],[5.5,"#e8c93a"],[7,"#4f9a4a"],[8.5,"#2f8f8a"],[10,"#2d6aa6"],[12,"#3b4c9b"],[14,"#4a3a7a"]];
+  p=Math.max(0,Math.min(14,p));
+  for(let i=0;i<stops.length-1;i++){ const [a,ca]=stops[i],[b,cb]=stops[i+1]; if(p<=b){ const t=(p-a)/(b-a); return mix(ca,cb,t);} }
+  return stops[stops.length-1][1];
+}
+function mix(a,b,t){ const pa=[1,3,5].map(i=>parseInt(a.substr(i,2),16)), pb=[1,3,5].map(i=>parseInt(b.substr(i,2),16)); return "rgb("+pa.map((x,i)=>Math.round(x+(pb[i]-x)*t)).join(",")+")"; }
+
+/* Stepper */
+function buildSteps(){
+  $("#stepList").innerHTML = STEPS.map((n,i)=>`<li><button type="button" data-go="${i+1}"><span class="num">${i+1}</span>${n}</button></li>`).join("");
+  $$("#stepList button").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+}
+function go(n){
+  if(n>1 && !S.acid){ showModal("Bitte zuerst die Säure wählen","Wählt im ersten Schritt aus, ob eure Gruppe mit Salzsäure oder Essigsäure arbeitet.",null,true); n=1; }
+  S.step=n; S.maxStep=Math.max(S.maxStep,n); save();
+  $$(".panel").forEach(p=>p.classList.toggle("active", p.id==="p"+n));
+  $$("#stepList button").forEach(b=>{ const k=+b.dataset.go; b.toggleAttribute("aria-current", false); if(k===n) b.setAttribute("aria-current","step"); b.classList.toggle("done", k<S.maxStep && k!==n); });
+  const cur=$(`#stepList button[data-go="${n}"]`); if(cur) cur.scrollIntoView({block:"nearest",inline:"center"});
+  if(n===3||n===4) drawAll();
+  if(n===5) renderIons();
+  if(n===6) renderReaction();
+  if(n===7) renderSummary();
+  renderHelp();
+  window.scrollTo({top:0});
+}
+$$("[data-next]").forEach(b=>b.addEventListener("click",()=>go(S.step+1)));
+$$("[data-prev]").forEach(b=>b.addEventListener("click",()=>go(S.step-1)));
+
+/* Bindings */
+$$("[data-bind]").forEach(el=>{
+  el.value = S[el.dataset.bind]||"";
+  el.addEventListener("input",()=>{ S[el.dataset.bind]=el.value; save(); });
+});
+$$("input[name=acid]").forEach(r=>{
+  r.checked = r.value===S.acid;
+  r.addEventListener("change",()=>{ S.acid=r.value; save(); applyAcid(); });
+});
+function applyAcid(){
+  const a=ACIDS[S.acid], o=ACIDS[other()];
+  $$("[data-acid-name]").forEach(e=>e.textContent = a ? a.name : "eure Säure");
+  $$("[data-other-name]").forEach(e=>e.textContent = o ? o.name : "der anderen Säure");
+  $$("[data-acid-badge]").forEach(e=>e.textContent = a ? "Eure Säure: "+a.name : "Säure noch nicht gewählt");
+  $$("[data-other-badge]").forEach(e=>e.textContent = o ? "Partnergruppe: "+o.name : "");
+}
+
+/* Prompts */
+$$(".prompts").forEach(box=>{
+  const ta=$("#"+box.dataset.target);
+  $$("button",box).forEach(b=>b.addEventListener("click",()=>{
+    const add=b.dataset.text; ta.value = (ta.value && !ta.value.endsWith("\n") ? ta.value+"\n" : ta.value) + add;
+    ta.dispatchEvent(new Event("input")); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+  }));
+});
+
+/* Tables */
+function parsePH(v){ if(v==null) return NaN; v=String(v).trim().replace(",","."); if(v==="") return NaN; const n=Number(v); return n; }
+function buildTable(sel, store){
+  const tb=$(sel+" tbody");
+  tb.innerHTML = VOLS.map(v=>`<tr><td>${v}${v===0?" (Start)":""}</td><td><input type="text" inputmode="decimal" aria-label="pH-Wert nach ${v} ml Natronlauge" data-v="${v}" maxlength="5" placeholder="–"></td></tr>`).join("");
+  $$("input",tb).forEach(inp=>{
+    const v=inp.dataset.v; const val=S[store][v]; inp.value = val!=null ? String(val).replace(".",",") : "";
+    validate(inp);
+    inp.addEventListener("input",()=>{ const n=parsePH(inp.value); if(inp.value.trim()===""){ delete S[store][v]; } else if(!isNaN(n)&&n>=0&&n<=14){ S[store][v]=n; } else { delete S[store][v]; } validate(inp); save(); drawAll(); });
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key==="ArrowDown"){ e.preventDefault(); const nx=inp.closest("tr").nextElementSibling; if(nx) $("input",nx).focus(); } if(e.key==="ArrowUp"){ e.preventDefault(); const pv=inp.closest("tr").previousElementSibling; if(pv) $("input",pv).focus(); } });
+  });
+}
+function validate(inp){ const t=inp.value.trim(); const n=parsePH(t); inp.classList.toggle("invalid", t!=="" && (isNaN(n)||n<0||n>14)); }
+function fill(store, acid){ VOLS.forEach(v=>{ S[store][v]=Math.round(modelPH(acid,v)*10)/10; }); save(); buildTable(store==="own"?"#ownTable":"#partnerTable", store); drawAll(); }
+$("#fillOwn").addEventListener("click",()=>{ if(!S.acid) return; showModal("Beispielwerte einsetzen?","Die eingetragenen Messwerte eurer Gruppe werden durch berechnete Beispielwerte ersetzt.",()=>fill("own",S.acid)); });
+$("#fillPartner").addEventListener("click",()=>{ if(!other()) return; showModal("Beispielwerte einsetzen?","Die eingetragenen Werte der Partnergruppe werden durch berechnete Beispielwerte ersetzt.",()=>fill("partnerVals",other())); });
+
+/* Chart */
+function drawChart(svg, series){
+  const W=640,H=420,m={l:52,r:18,t:16,b:50};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const x=v=>m.l+v/15*iw, y=p=>m.t+(14-p)/14*ih;
+  let s="";
+  // pH background band
+  s+=`<defs><linearGradient id="g${svg.id}" x1="0" y1="1" x2="0" y2="0">`;
+  for(let p=0;p<=14;p+=1) s+=`<stop offset="${p/14}" stop-color="${phColor(p)}"/>`;
+  s+=`</linearGradient></defs>`;
+  s+=`<rect x="${m.l-14}" y="${m.t}" width="8" height="${ih}" rx="3" fill="url(#g${svg.id})"/>`;
+  s+=`<rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="#fffdf8" stroke="#d9d2c3"/>`;
+  for(let p=0;p<=14;p+=2){ s+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${y(p)}" y2="${y(p)}" stroke="#e8e2d5"/>`; s+=`<text x="${m.l-20}" y="${y(p)+4}" font-size="12" text-anchor="end" fill="#6b7480">${p}</text>`; }
+  for(let v=0;v<=15;v++){ if(v%1===0) s+=`<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${m.t+ih}" stroke="${v%5===0?'#e2dbcc':'#f0ebe0'}"/>`; if(v%1===0) s+=`<text x="${x(v)}" y="${m.t+ih+18}" font-size="12" text-anchor="middle" fill="#6b7480">${v}</text>`; }
+  s+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${y(7)}" y2="${y(7)}" stroke="#2f7a4a" stroke-dasharray="4 4" opacity=".7"/>`;
+  s+=`<text x="${m.l+iw-4}" y="${y(7)-6}" font-size="12" text-anchor="end" fill="#2f7a4a">neutral (pH 7)</text>`;
+  s+=`<text x="${m.l+iw/2}" y="${H-8}" font-size="13" text-anchor="middle" fill="#4a5560">zugegebenes Volumen Natronlauge V(NaOH) in ml</text>`;
+  s+=`<text transform="translate(14 ${m.t+ih/2}) rotate(-90)" font-size="13" text-anchor="middle" fill="#4a5560">pH-Wert</text>`;
+  let any=false;
+  series.forEach(se=>{
+    const pts=VOLS.filter(v=>se.data[v]!=null).map(v=>[x(v),y(se.data[v]),se.data[v]]);
+    if(!pts.length) return; any=true;
+    if(pts.length>1) s+=`<polyline fill="none" stroke="${se.color}" stroke-width="2.5" ${se.dash?'stroke-dasharray="7 5"':''} stroke-linejoin="round" points="${pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")}"/>`;
+    pts.forEach(p=>{ s+= se.dash ? `<rect x="${p[0]-4.5}" y="${p[1]-4.5}" width="9" height="9" fill="#fff" stroke="${se.color}" stroke-width="2"/>` : `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${phColor(p[2])}" stroke="${se.color}" stroke-width="1.8"/>`; });
+  });
+  if(!any) s+=`<text x="${m.l+iw/2}" y="${m.t+ih/2}" font-size="15" text-anchor="middle" fill="#6b7480">Noch keine Messwerte – tragt links die pH-Werte ein.</text>`;
+  svg.innerHTML=s;
+}
+function drawAll(){
+  drawChart($("#chart1"),[{data:S.own,color:"#1e2830"}]);
+  drawChart($("#chart2"),[{data:S.own,color:"#1e2830"},{data:S.partnerVals,color:"#24598a",dash:true}]);
+  drawChart($("#chart3"),[{data:S.own,color:"#1e2830"},{data:S.partnerVals,color:"#24598a",dash:true}]);
+}
+
+/* Ions */
+function ionKeys(){ const o=other(); return [S.acid,"naoh",o].filter(Boolean); }
+function renderIons(){
+  const box=$("#ionCards");
+  box.innerHTML = ionKeys().map((k,idx)=>{
+    const sol=SOLUTIONS[k];
+    const tag = k==="naoh" ? `<span class="badge base">Lauge</span>` : (idx===0 ? `<span class="badge acid">eure Säure</span>` : `<span class="badge">Säure der Partnergruppe</span>`);
+    return `<div class="card ion-card" data-sol="${k}">
+      <h3>${sol.title} <span style="font-weight:400;color:var(--ink-3)">${sol.formula}</span> ${tag}</h3>
+      <div class="chips">${ION_CHOICES.map(c=>`<button type="button" class="chip" data-ion="${c}" aria-pressed="${(S.ions[k]||[]).includes(c)}"><span class="f">${P[c].f}</span><span class="n">${P[c].n}</span></button>`).join("")}</div>
+      <div style="margin-top:var(--sp-3)"><button class="btn" type="button" data-check-ion="${k}">Auswahl prüfen</button></div>
+      <div class="feedback" role="status"></div>
+    </div>`;
+  }).join("");
+  $$(".ion-card").forEach(card=>{
+    const k=card.dataset.sol;
+    $$(".chip",card).forEach(ch=>ch.addEventListener("click",()=>{
+      const on = ch.getAttribute("aria-pressed")!=="true"; ch.setAttribute("aria-pressed",on);
+      const arr=new Set(S.ions[k]||[]); on?arr.add(ch.dataset.ion):arr.delete(ch.dataset.ion); S.ions[k]=[...arr];
+      $$(".chip",card).forEach(c=>c.classList.remove("ok","bad","miss")); $(".feedback",card).className="feedback"; save();
+    }));
+    $("[data-check-ion]",card).addEventListener("click",()=>checkIons(k,card));
+    if(S.ionChecked[k]) checkIons(k,card,true);
+  });
+}
+function checkIons(k,card,silent){
+  const sol=SOLUTIONS[k], sel=new Set(S.ions[k]||[]);
+  const wrong=[], missing=[];
+  const needFlat=new Set(sol.need.flat());
+  sel.forEach(i=>{ if(!needFlat.has(i)) wrong.push(i); });
+  sol.need.forEach(group=>{ if(!group.some(g=>sel.has(g))) missing.push(group[0]); });
+  $$(".chip",card).forEach(c=>{ const i=c.dataset.ion; c.classList.remove("ok","bad","miss");
+    if(sel.has(i)) c.classList.add(needFlat.has(i)?"ok":"bad"); else if(missing.includes(i)) c.classList.add("miss"); });
+  const fb=$(".feedback",card);
+  let h="";
+  if(!wrong.length && !missing.length){
+    fb.className="feedback show good";
+    h=`<strong>Richtig.</strong> In der ${sol.title} liegen ${sol.need.map(g=>P[g.find(x=>sel.has(x))].f).join(" und ")} vor.`;
+    if(sel.has("H")&&!sel.has("H3O")) h+=" Genauer: Das H⁺-Ion liegt in Wasser als Oxonium-Ion H₃O⁺ vor.";
+    if(sel.has("H")&&sel.has("H3O")) h+=" H⁺ und H₃O⁺ meinen hier dasselbe – H⁺ ist die vereinfachte Schreibweise.";
+    if(sol.extra) h+=`<p style="margin:var(--sp-2) 0 0">${sol.extra}</p>`;
+  } else {
+    fb.className="feedback show part";
+    h=`<strong>Noch nicht ganz.</strong><ul>`;
+    if(missing.length) h+=`<li>Es fehlt noch ${missing.length===1?"eine Ionensorte":"mehr als eine Ionensorte"}. ${sol.kind==="acid"?"Tipp: Hilfekarte „Was ist eine Säure?“":"Tipp: Hilfekarte „Was ist eine Base?“"}</li>`;
+    wrong.forEach(i=>{ h+=`<li><strong>${P[i].f}</strong>: ${sol.msg[i]||"gehört nicht in diese Lösung."}</li>`; });
+    h+="</ul>";
+  }
+  fb.innerHTML=h;
+  if(!silent){ S.ionChecked[k]=true; save(); }
+}
+
+/* Reaction */
+function eqTemplate(id){
+  const st=S.eq[id]||{};
+  const term=(slot)=>`<span class="term"><select class="coef" aria-label="Koeffizient" data-slot="${slot}c">${["","2","3"].map(c=>`<option value="${c}" ${st[slot+"c"]===c?"selected":""}>${c||"–"}</option>`).join("")}</select><select class="part" aria-label="Teilchen" data-slot="${slot}">${EQ_PARTS.map(p=>`<option value="${p}" ${st[slot]===p?"selected":""}>${p?P[p].f:"(leer)"}</option>`).join("")}</select></span>`;
+  return `${term("r1")}<span class="op">+</span>${term("r2")}<span class="op arrow" aria-label="reagiert zu">→</span>${term("p1")}<span class="op">+</span>${term("p2")}`;
+}
+function renderReaction(){
+  const eq=$("#eqOwn"); eq.innerHTML=eqTemplate("own");
+  $$("select",eq).forEach(s=>s.addEventListener("change",()=>{ S.eq.own=S.eq.own||{}; S.eq.own[s.dataset.slot]=s.value; save(); $("#fb-eqOwn").className="feedback"; }));
+  const cand = S.acid==="hcl" ? ["Na","Cl","H3O","OH"] : ["Na","Ac","HAc","OH"];
+  $("#specChips").innerHTML = cand.map(c=>`<button type="button" class="chip" data-ion="${c}" aria-pressed="${S.spec.includes(c)}"><span class="f">${P[c].f}</span><span class="n">${P[c].n}</span></button>`).join("");
+  $$("#specChips .chip").forEach(ch=>ch.addEventListener("click",()=>{ const on=ch.getAttribute("aria-pressed")!=="true"; ch.setAttribute("aria-pressed",on); const s=new Set(S.spec); on?s.add(ch.dataset.ion):s.delete(ch.dataset.ion); S.spec=[...s]; save(); $$("#specChips .chip").forEach(c=>c.classList.remove("ok","bad","miss")); $("#fb-spec").className="feedback"; }));
+  if(S.eqResult) checkEq(true);
+  if(S.specResult) checkSpec(true);
+}
+function side(st,a,b){ const m={}; [a,b].forEach(sl=>{ const p=st[sl]; if(!p) return; const c=parseInt(st[sl+"c"]||"1",10); m[p]=(m[p]||0)+c; }); return m; }
+const same=(x,y)=>{ const kx=Object.keys(x), ky=Object.keys(y); return kx.length===ky.length && kx.every(k=>x[k]===y[k]); };
+function checkEq(silent){
+  const st=S.eq.own||{}; const L=side(st,"r1","r2"), R=side(st,"p1","p2");
+  const fb=$("#fb-eqOwn");
+  const ok1 = same(L,{H3O:1,OH:1}) && same(R,{H2O:2});
+  const ok2 = same(L,{H:1,OH:1}) && same(R,{H2O:1});
+  const okAc = same(L,{HAc:1,OH:1}) && (same(R,{Ac:1,H2O:1}));
+  let cls="part", h="";
+  if(ok1||ok2){
+    cls="good";
+    h = `<strong>Richtig – das ist die Neutralisation.</strong> Ein Oxonium-Ion gibt ein Proton an ein Hydroxid-Ion ab. Dabei entsteht Wasser.`;
+    if(ok2) h+=` In der ausführlichen Schreibweise: H₃O⁺ + OH⁻ → 2 H₂O.`;
+    if(S.acid==="hac") h+=`<p style="margin:var(--sp-2) 0 0"><strong>Für Profis:</strong> Bei der Essigsäure liegen nur wenige H₃O⁺-Ionen vor. Werden sie verbraucht, geben weitere Essigsäure-Moleküle Protonen ab. Zusammengefasst: CH₃COOH + OH⁻ → CH₃COO⁻ + H₂O.</p>`;
+  } else if(S.acid==="hac" && okAc){
+    cls="good";
+    h=`<strong>Richtig – und sehr genau.</strong> Die Essigsäure-Moleküle geben ihr Proton an die Hydroxid-Ionen ab; es entstehen Acetat-Ionen und Wasser. Im Kern ist das dieselbe Reaktion wie bei der Salzsäure: H⁺ + OH⁻ → H₂O.`;
+  } else {
+    const parts=[];
+    const has=k=>L[k]!=null; const hasR=k=>R[k]!=null;
+    if(!Object.keys(L).length) parts.push("Wählt zuerst die beiden Teilchen aus, die miteinander reagieren.");
+    else{
+      if(!has("OH")) parts.push("Welches Teilchen aus der Natronlauge kann ein Proton aufnehmen? (Hilfekarte „Base“)");
+      if(!(has("H3O")||has("H")||has("HAc"))) parts.push("Welches Teilchen aus der Säure kann ein Proton abgeben? (Hilfekarte „Säure“)");
+      ["Na","Cl","Ac"].forEach(k=>{ if(has(k)) parts.push(`${P[k].f} gibt keine Protonen ab und nimmt keine auf – es reagiert nicht mit.`); });
+      ["NaCl","H2","Cl2","NaOH"].forEach(k=>{ if(has(k)||hasR(k)) parts.push(`${P[k].f} gehört nicht in diese Reaktionsgleichung.`); });
+      if(!hasR("H2O") && Object.keys(R).length) parts.push("Überlegt, welches Produkt entsteht (Hilfekarte „Was könnte entstehen?“).");
+      if(!Object.keys(R).length) parts.push("Tragt auf der rechten Seite das Produkt ein.");
+      if(hasR("H2O") && (has("H3O")) && R.H2O!==2) parts.push("Zählt die Atome: Aus H₃O⁺ und OH⁻ entstehen mehrere Wasser-Moleküle. Passt den Koeffizienten an.");
+      if(!parts.length) parts.push("Prüft, ob links und rechts gleich viele Atome und Ladungen stehen.");
+    }
+    h=`<strong>Noch nicht ganz.</strong><ul>${parts.map(p=>`<li>${p}</li>`).join("")}</ul>`;
+  }
+  fb.className="feedback show "+cls; fb.innerHTML=h;
+  if(!silent){ S.eqResult=cls; save(); }
+}
+function checkSpec(silent){
+  const right = S.acid==="hcl" ? ["Na","Cl"] : ["Na"];
+  const sel=new Set(S.spec); const fb=$("#fb-spec");
+  $$("#specChips .chip").forEach(c=>{ const i=c.dataset.ion; c.classList.remove("ok","bad","miss"); if(sel.has(i)) c.classList.add(right.includes(i)?"ok":"bad"); });
+  const wrong=[...sel].filter(i=>!right.includes(i)); const miss=right.filter(i=>!sel.has(i));
+  let h, cls;
+  if(!wrong.length && !miss.length){ cls="good";
+    h = S.acid==="hcl" ? "<strong>Richtig.</strong> Na⁺ und Cl⁻ bleiben unverändert in der Lösung. Nach 10 ml Natronlauge enthält die Lösung also Natrium- und Chlorid-Ionen: eine Kochsalzlösung."
+                       : "<strong>Richtig.</strong> Na⁺ bleibt unverändert. Die Acetat-Ionen entstehen bei der Reaktion – nach 10 ml Natronlauge liegt eine Natriumacetat-Lösung vor (Na⁺ und CH₃COO⁻). Weil Acetat-Ionen schwach basisch sind, liegt der pH-Wert hier leicht über 7.";
+  } else { cls="part";
+    h="<strong>Noch nicht ganz.</strong><ul>"+wrong.map(i=>`<li>${P[i].f} ${i==="OH"||i==="H3O"||i==="HAc"?"reagiert bei der Neutralisation – es ist kein Zuschauer.":"reagiert nicht – aber gehört es wirklich in die Lösung?"}</li>`).join("")+(miss.length?"<li>Es fehlt noch mindestens ein Zuschauer-Ion.</li>":"")+"</ul>";
+  }
+  fb.className="feedback show "+cls; fb.innerHTML=h;
+  if(!silent){ S.specResult=cls; save(); }
+}
+$$("[data-check-eq]").forEach(b=>b.addEventListener("click",()=>checkEq()));
+$("#checkSpec").addEventListener("click",()=>checkSpec());
+
+/* Help */
+function renderHelp(){
+  const list=$("#helpList"); const st=S.step;
+  const rel=HELP.filter(h=>h.steps.includes(st)), rest=HELP.filter(h=>!h.steps.includes(st));
+  const card=h=>`<div class="hcard ${h.steps.includes(st)?"rel":""}" data-id="${h.id}" data-open="false">
+     <button class="face" type="button" aria-expanded="false"><span class="ico ${h.ico}">${h.sym}</span><span class="t">${h.title}<small>${h.sub}${S.help.includes(h.id)?' · <span class="used">schon aufgedeckt</span>':''}</small></span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+     <div class="back">${h.html}</div></div>`;
+  list.innerHTML = (rel.length?`<p class="section-label">Passend zu diesem Schritt</p>`+rel.map(card).join(""):"") + `<p class="section-label">Weitere Hilfekarten</p>`+rest.map(card).join("");
+  $$(".hcard",list).forEach(c=>{ const b=$(".face",c); b.addEventListener("click",()=>{ const o=c.dataset.open!=="true"; c.dataset.open=o; b.setAttribute("aria-expanded",o); if(o && !S.help.includes(c.dataset.id)){ S.help.push(c.dataset.id); save(); $("#helpCount").textContent=S.help.length; } }); });
+  $("#helpCount").textContent=S.help.length;
+}
+let lastFocus=null;
+function openHelp(){ lastFocus=document.activeElement; renderHelp(); $("#drawer").classList.add("open"); $("#drawer [data-close-help].btn").focus(); }
+function closeHelp(){ $("#drawer").classList.remove("open"); if(lastFocus) lastFocus.focus(); }
+$("#openHelp").addEventListener("click",openHelp);
+$$("[data-open-help]").forEach(b=>b.addEventListener("click",openHelp));
+$$("[data-close-help]").forEach(b=>b.addEventListener("click",closeHelp));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ if($("#modal").classList.contains("open")) hideModal(); else if($("#drawer").classList.contains("open")) closeHelp(); } });
+
+/* Modal */
+let modalCb=null;
+function showModal(t,txt,cb,infoOnly){ $("#modalTitle").textContent=t; $("#modalText").textContent=txt; modalCb=cb; $("#modalNo").style.display=infoOnly?"none":""; $("#modalYes").textContent=infoOnly?"OK":"Ja"; $("#modal").classList.add("open"); $("#modalYes").focus(); }
+function hideModal(){ $("#modal").classList.remove("open"); modalCb=null; }
+$("#modalYes").addEventListener("click",()=>{ const cb=modalCb; hideModal(); if(cb) cb(); });
+$("#modalNo").addEventListener("click",hideModal);
+$("#resetBtn").addEventListener("click",()=>showModal("Neu beginnen?","Alle Eingaben dieser Gruppe werden gelöscht.",()=>{ localStorage.removeItem(KEY); location.reload(); }));
+
+/* Summary */
+function eqText(){ const st=S.eq.own||{}; const t=sl=>st[sl]?((st[sl+"c"]||"")+(st[sl+"c"]?" ":"")+P[st[sl]].f):null; const l=[t("r1"),t("r2")].filter(Boolean).join(" + "), r=[t("p1"),t("p2")].filter(Boolean).join(" + "); return l||r ? `${l} → ${r}` : ""; }
+function valsText(d){ return VOLS.map(v=>`${v} ml: ${d[v]!=null?String(d[v]).replace(".",","):"–"}`).join(" | "); }
+function ionsText(){ return ionKeys().map(k=>`${SOLUTIONS[k].title}: ${(S.ions[k]||[]).map(i=>P[i].f).join(", ")||"–"}`).join("\n"); }
+function rows(){
+  const a=ACIDS[S.acid], o=ACIDS[other()];
+  return [
+    ["Gruppe", S.group||"–"], ["Säure", a?a.name:"–"], ["Vermutung", S.hypothesis||"–"],
+    ["Messwerte (pH)", valsText(S.own)], ["Beobachtungen", S.observation||"–"],
+    ["Partnergruppe", (S.partner||"–")+(o?` (${o.name})`:"")], ["Werte der Partnergruppe", valsText(S.partnerVals)],
+    ["Gemeinsamkeiten", S.common||"–"], ["Unterschiede", S.differences||"–"],
+    ["Vorhandene Ionen", ionsText()], ["Reaktionsgleichung", eqText()||"–"],
+    ["Zuschauer-Ionen", S.spec.map(i=>P[i].f).join(", ")||"–"], ["Erklärung", S.explanation||"–"],
+    ["Gemeinsamkeit auf Teilchenebene", S.general||"–"],
+    ["Genutzte Hilfekarten", S.help.length? S.help.map(id=>HELP.find(h=>h.id===id).title).join("; ") : "keine"]
+  ];
+}
+function renderSummary(){
+  $("#summary").innerHTML = `<h3>Versuchsprotokoll: Neutralisation</h3><dl>${rows().map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
+  drawAll();
+}
+$("#printBtn").addEventListener("click",()=>{ renderSummary(); window.print(); });
+$("#dlBtn").addEventListener("click",()=>{
+  const txt="Versuchsprotokoll: Neutralisation (Chemie Klasse 10)\n\n"+rows().map(([k,v])=>`${k}:\n${v}\n`).join("\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}); const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=`Protokoll_Neutralisation_${(S.group||"Gruppe").replace(/[^\wäöüÄÖÜß-]+/g,"_")}.txt`; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+});
+
+/* Init */
+buildSteps(); applyAcid(); buildTable("#ownTable","own"); buildTable("#partnerTable","partnerVals"); drawAll();
+go(S.acid ? S.step : 1);
+})();
+</script>
+</body>
+</html>
