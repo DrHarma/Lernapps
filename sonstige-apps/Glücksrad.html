@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glücksrad – Zufallsauswahl</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f3ec; --surface:#ffffff; --ink:#1f2433; --muted:#6b6f7c; --line:#e3ded2;
+    --accent:#d9472b; --accent-ink:#ffffff; --accent-soft:#fbe6e0;
+    --ok:#2f7d5b; --radius:16px;
+    --shadow:0 1px 2px rgba(31,36,51,.06),0 8px 24px rgba(31,36,51,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"General Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.45}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 40px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  h1{font-family:"General Sans",sans-serif;font-weight:700;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.02em}
+  header p{color:var(--muted)}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .stage{padding:22px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .wheel-box{position:relative;width:min(100%,600px);aspect-ratio:1}
+  canvas{width:100%;height:100%;display:block;cursor:pointer}
+  .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;
+    border-left:20px solid transparent;border-right:20px solid transparent;border-top:38px solid var(--ink);
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));z-index:2}
+  .hub{position:absolute;inset:0;margin:auto;width:17%;height:17%;border-radius:50%;background:var(--surface);
+    border:4px solid var(--ink);display:grid;place-items:center;font-family:"General Sans",sans-serif;font-weight:700;
+    font-size:clamp(1rem,3vw,1.6rem);pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+  .result{min-height:96px;text-align:center}
+  .result .label{color:var(--muted);font-size:.95rem}
+  .result .num{font-family:"General Sans",sans-serif;font-weight:700;font-size:clamp(3rem,7vw,4.5rem);line-height:1;color:var(--accent);transition:transform .3s}
+  .result .num.pop{animation:pop .5s ease}
+  @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  button{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    padding:12px 20px;font-weight:600;transition:transform .1s,background .2s,box-shadow .2s}
+  button:hover:not(:disabled){box-shadow:var(--shadow)}
+  button:active:not(:disabled){transform:translateY(1px)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button:focus-visible,input:focus-visible{outline:3px solid #2b6cd9;outline-offset:2px}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-size:1.15rem;padding:14px 34px}
+  .btn-primary:hover:not(:disabled){background:#c23c22}
+  .panel{padding:20px;display:flex;flex-direction:column;gap:22px}
+  .panel h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:10px}
+  .count-row{display:flex;align-items:center;gap:10px}
+  .count-row button{width:46px;height:46px;padding:0;font-size:1.4rem;line-height:1}
+  .count-row input{width:90px;height:46px;text-align:center;font:inherit;font-size:1.4rem;font-weight:700;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+  .hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+  .modes{display:flex;flex-direction:column;gap:8px}
+  .mode{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s}
+  .mode:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+  .mode input{margin-top:4px;accent-color:var(--accent);width:18px;height:18px}
+  .mode strong{display:block}
+  .mode span{font-size:.88rem;color:var(--muted)}
+  .stats{display:flex;gap:10px}
+  .stat{flex:1;background:var(--bg);border-radius:12px;padding:10px 12px}
+  .stat b{display:block;font-size:1.4rem;font-family:"General Sans",sans-serif;font-weight:700}
+  .stat small{color:var(--muted)}
+  .history{display:flex;flex-wrap:wrap;gap:6px;min-height:34px}
+  .chip{min-width:34px;height:34px;padding:0 8px;border-radius:999px;display:grid;place-items:center;font-weight:700;font-size:.95rem;color:#fff}
+  .empty{color:var(--muted);font-size:.9rem}
+  .btn-reset{width:100%;border-color:var(--ink)}
+  .done{color:var(--ok);font-weight:600}
+  @media (prefers-reduced-motion:reduce){.result .num.pop{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Glücksrad</h1>
+    <p>Zufällige Auswahl für die Klasse – Rad antippen oder „Drehen“ drücken.</p>
+  </header>
+
+  <div class="layout">
+    <section class="card stage" aria-label="Glücksrad">
+      <div class="wheel-box">
+        <div class="pointer" aria-hidden="true"></div>
+        <canvas id="wheel" width="1200" height="1200" role="img" aria-label="Glücksrad mit Zahlen"></canvas>
+        <div class="hub" id="hub">?</div>
+      </div>
+      <div class="result" aria-live="polite">
+        <div class="label" id="resultLabel">Noch nicht gedreht</div>
+        <div class="num" id="resultNum">–</div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="spinBtn">Drehen</button>
+      </div>
+    </section>
+
+    <aside class="card panel" aria-label="Einstellungen">
+      <div>
+        <h2>Anzahl Personen</h2>
+        <div class="count-row">
+          <button id="minus" aria-label="Eine Person weniger">−</button>
+          <input id="count" type="number" min="2" max="100" value="25" inputmode="numeric" aria-label="Anzahl Personen">
+          <button id="plus" aria-label="Eine Person mehr">+</button>
+        </div>
+        <p class="hint">2 bis 100 Personen. Eine Änderung setzt das Rad zurück.</p>
+      </div>
+
+      <div>
+        <h2>Modus</h2>
+        <div class="modes">
+          <label class="mode">
+            <input type="radio" name="mode" value="keep" checked>
+            <div><strong>Alle Zahlen bleiben</strong><span>Jede Zahl kann mehrfach gezogen werden.</span></div>
+          </label>
+          <label class="mode">
+            <input type="radio" name="mode" value="remove">
+            <div><strong>Gezogene Zahl entfernen</strong><span>Jede Zahl wird nur einmal gezogen und danach aus dem Rad gelöscht.</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <h2>Status</h2>
+        <div class="stats">
+          <div class="stat"><b id="statLeft">25</b><small>im Rad</small></div>
+          <div class="stat"><b id="statSpins">0</b><small>Drehungen</small></div>
+        </div>
+      </div>
+
+      <div>
+        <h2>Bisher gezogen</h2>
+        <div class="history" id="history"><span class="empty">Noch keine Ziehung.</span></div>
+      </div>
+
+      <button class="btn-reset" id="resetBtn">Zurücksetzen</button>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const countInput = document.getElementById('count');
+  const spinBtn = document.getElementById('spinBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const hub = document.getElementById('hub');
+  const resultLabel = document.getElementById('resultLabel');
+  const resultNum = document.getElementById('resultNum');
+  const historyEl = document.getElementById('history');
+  const statLeft = document.getElementById('statLeft');
+  const statSpins = document.getElementById('statSpins');
+
+  let total = 25;
+  let numbers = [];
+  let history = [];
+  let rotation = 0;          // current wheel rotation in radians
+  let spinning = false;
+  let highlight = null;      // number to highlight after spin
+
+  const mode = () => document.querySelector('input[name="mode"]:checked').value;
+
+  // Stable colour per number
+  const palette = ['#d9472b','#2b6cd9','#e8a33d','#2f7d5b','#8a4fbf','#d13f7a','#1f9aa8','#5a6b2f','#c66a1e','#3d4a8a'];
+  const colorFor = n => palette[(n - 1) % palette.length];
+
+  function randInt(max){ // 0..max-1, unbiased
+    if (window.crypto && crypto.getRandomValues){
+      const buf = new Uint32Array(1), lim = Math.floor(0x100000000 / max) * max;
+      do { crypto.getRandomValues(buf); } while (buf[0] >= lim);
+      return buf[0] % max;
+    }
+    return Math.floor(Math.random() * max);
+  }
+
+  function draw(){
+    const W = canvas.width, c = W / 2, r = c - 16;
+    ctx.clearRect(0, 0, W, W);
+    const n = numbers.length;
+
+    // outer ring
+    ctx.beginPath(); ctx.arc(c, c, r + 10, 0, Math.PI * 2);
+    ctx.fillStyle = '#1f2433'; ctx.fill();
+
+    if (n === 0){
+      ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#ece7db'; ctx.fill();
+      ctx.fillStyle = '#6b6f7c'; ctx.font = '600 52px "General Sans", sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Alle gezogen', c, c - r * 0.45);
+      return;
+    }
+
+    const seg = Math.PI * 2 / n;
+    const fontSize = Math.max(22, Math.min(78, 900 / n + 18));
+    for (let i = 0; i < n; i++){
+      const start = rotation + i * seg - Math.PI / 2;
+      const num = numbers[i];
+      ctx.beginPath(); ctx.moveTo(c, c);
+      ctx.arc(c, c, r, start, start + seg); ctx.closePath();
+      let col = colorFor(num);
+      if (highlight !== null && num !== highlight) col = shade(col);
+      ctx.fillStyle = col; ctx.fill();
+      if (n > 1){ ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = n > 60 ? 1.5 : 3; ctx.stroke(); }
+
+      ctx.save();
+      ctx.translate(c, c); ctx.rotate(start + seg / 2);
+      ctx.fillStyle = '#fff';
+      ctx.font = `700 ${fontSize}px "General Sans", sans-serif`;
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(num), r - 24, 0);
+      ctx.restore();
+    }
+  }
+
+  function shade(hex){ // desaturate non-winning segments
+    const v = parseInt(hex.slice(1), 16);
+    const mix = (x) => Math.round(x * 0.35 + 220 * 0.65);
+    return `rgb(${mix(v >> 16 & 255)},${mix(v >> 8 & 255)},${mix(v & 255)})`;
+  }
+
+  function updateUI(){
+    statLeft.textContent = numbers.length;
+    statSpins.textContent = history.length;
+    spinBtn.disabled = spinning || numbers.length === 0;
+    resetBtn.disabled = spinning;
+    countInput.disabled = spinning;
+    document.getElementById('minus').disabled = spinning;
+    document.getElementById('plus').disabled = spinning;
+    document.querySelectorAll('input[name="mode"]').forEach(el => el.disabled = spinning);
+
+    if (history.length === 0){
+      historyEl.innerHTML = '<span class="empty">Noch keine Ziehung.</span>';
+    } else {
+      historyEl.innerHTML = history.map(h => `<span class="chip" style="background:${colorFor(h)}">${h}</span>`).join('');
+    }
+  }
+
+  function reset(){
+    if (spinning) return;
+    let v = parseInt(countInput.value, 10);
+    if (isNaN(v)) v = 25;
+    v = Math.max(2, Math.min(100, v));
+    countInput.value = v;
+    total = v;
+    numbers = Array.from({ length: total }, (_, i) => i + 1);
+    history = [];
+    highlight = null;
+    rotation = 0;
+    hub.textContent = '?';
+    resultLabel.textContent = 'Noch nicht gedreht';
+    resultNum.textContent = '–';
+    draw(); updateUI();
+  }
+
+  function spin(){
+    if (spinning) return;
+    // In removal mode, delete the last winner before the next spin (if still in the wheel)
+    if (highlight !== null && mode() === 'remove'){
+      numbers = numbers.filter(x => x !== highlight);
+    }
+    highlight = null;
+    if (numbers.length === 0){ draw(); updateUI(); return; }
+
+    spinning = true; updateUI();
+    resultLabel.textContent = 'Das Rad dreht sich …';
+    resultNum.textContent = '…';
+    hub.textContent = '…';
+
+    const n = numbers.length;
+    const seg = Math.PI * 2 / n;
+    const idx = randInt(n);
+    // offset within segment (avoid edges)
+    const within = (0.15 + Math.random() * 0.7) * seg;
+    // pointer at top (angle -PI/2). segment i spans rotation + i*seg - PI/2.
+    // want rotation + idx*seg + within ≡ 0 (mod 2π)
+    let target = -(idx * seg + within);
+    const TAU = Math.PI * 2;
+    const current = rotation % TAU;
+    let delta = ((target - current) % TAU + TAU) % TAU;
+    const turns = 5 + randInt(3);
+    const startRot = rotation;
+    const endRot = rotation + delta + turns * TAU;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reduce ? 600 : 4800 + randInt(800);
+    const t0 = performance.now();
+
+    function frame(now){
+      const t = Math.min(1, (now - t0) / duration);
+      const e = 1 - Math.pow(1 - t, 4);
+      rotation = startRot + (endRot - startRot) * e;
+      draw();
+      if (t < 1) requestAnimationFrame(frame);
+      else finish(numbers[idx]);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function finish(win){
+    rotation = rotation % (Math.PI * 2);
+    spinning = false;
+    highlight = win;
+    history.push(win);
+    hub.textContent = win;
+    resultNum.textContent = win;
+    resultNum.style.color = colorFor(win);
+    resultNum.classList.remove('pop'); void resultNum.offsetWidth; resultNum.classList.add('pop');
+
+    if (mode() === 'remove'){
+      const left = numbers.length - 1;
+      resultLabel.innerHTML = left === 0
+        ? '<span class="done">Gezogen – das war die letzte Zahl.</span>'
+        : `Gezogen – wird beim nächsten Drehen entfernt (noch ${left} übrig)`;
+      if (left === 0){
+        numbers = []; highlight = null;
+        setTimeout(() => { if (!spinning) draw(); }, 1600);
+      }
+    } else {
+      resultLabel.textContent = 'Gezogen';
+    }
+    draw(); updateUI();
+    statLeft.textContent = mode() === 'remove' ? Math.max(0, numbers.length - (highlight !== null ? 1 : 0)) : numbers.length;
+  }
+
+  spinBtn.addEventListener('click', spin);
+  canvas.addEventListener('click', () => { if (!spinBtn.disabled) spin(); });
+  resetBtn.addEventListener('click', reset);
+  countInput.addEventListener('change', reset);
+  document.getElementById('minus').addEventListener('click', () => { countInput.value = Math.max(2, (+countInput.value || 25) - 1); reset(); });
+  document.getElementById('plus').addEventListener('click', () => { countInput.value = Math.min(100, (+countInput.value || 25) + 1); reset(); });
+  document.querySelectorAll('input[name="mode"]').forEach(el => el.addEventListener('change', reset));
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && document.activeElement === document.body){ e.preventDefault(); if (!spinBtn.disabled) spin(); }
+  });
+
+  reset();
+  if (document.fonts) document.fonts.ready.then(draw);
+})();
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  const PICK_CAPABILITIES = ["pick"];
+  const PICK_CHAIN_LENGTH = 4;
+  const PICK_MAX_TEXT_CHARS = 120;
+  const PICK_MAX_HTML_CHARS = 300;
+
+  function truncate(value, maxChars) {
+    return value.length > maxChars ? value.slice(0, maxChars - 1) + "…" : value;
+  }
+
+  function isPickableElement(element) {
+    return (
+      element instanceof Element &&
+      element !== document.documentElement &&
+      element !== document.body
+    );
+  }
+
+  function resolvePickTarget(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const element = document.elementFromPoint(x, y);
+    return isPickableElement(element) ? element.closest("svg") || element : null;
+  }
+
+  function pickLabel(element) {
+    if (element.id) return element.localName + "#" + element.id;
+    return [element.localName].concat(Array.from(element.classList).slice(0, 2)).join(".");
+  }
+
+  // Only attributes that help find the element in source. data-* values and URL
+  // query strings or fragments can carry tokens.
+  const PICK_ATTRIBUTES = new Set([
+    "id",
+    "class",
+    "name",
+    "type",
+    "role",
+    "alt",
+    "aria-label",
+    "href",
+    "src",
+  ]);
+
+  function pickAttributeValue(attribute) {
+    return attribute.name === "href" || attribute.name === "src"
+      ? attribute.value.split(/[?#]/)[0]
+      : attribute.value;
+  }
+
+  function describePickElement(element) {
+    const chain = [];
+    for (
+      let current = element;
+      isPickableElement(current) && chain.length < PICK_CHAIN_LENGTH;
+      current = current.parentElement
+    ) {
+      chain.unshift(current);
+    }
+    const attributes = Array.from(element.attributes)
+      .filter((attribute) => PICK_ATTRIBUTES.has(attribute.name))
+      .map((attribute) => ` ${attribute.name}="${pickAttributeValue(attribute).replace(/"/g, "&quot;")}"`)
+      .join("");
+    const text = (element.innerText || element.textContent || "").replace(/\s+/g, " ").trim();
+    return {
+      chain: chain.map(pickLabel),
+      html: truncate(`<${element.localName}${attributes}>`, PICK_MAX_HTML_CHARS),
+      text: text ? truncate(text, PICK_MAX_TEXT_CHARS) : undefined,
+    };
+  }
+
+  // Hover asks once per frame, and innerText on a large section forces layout,
+  // so only the rect is re-read while the pointer stays on the same element.
+  // Clicks ask for fresh details since the page may have changed the element.
+  let lastPick = null;
+
+  function describePickTarget(element, fresh) {
+    if (fresh || lastPick?.element !== element) {
+      lastPick = { element, details: describePickElement(element) };
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+      ...lastPick.details,
+    };
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+      capabilities: PICK_CAPABILITIES,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_PICK") {
+      const element = resolvePickTarget(event.data.x, event.data.y);
+      postToTrustedTop({
+        type: "INLINE_EDIT_PICK_RESULT",
+        seq: event.data.seq,
+        target: element ? describePickTarget(element, event.data.fresh === true) : null,
+      });
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
